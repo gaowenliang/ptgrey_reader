@@ -1,6 +1,4 @@
-//#include "stdafx.h"
 #include <flycapture/FlyCapture2.h>
-//#include "FlyCapture2.h"
 #include <iostream>
 #include <sstream>
 
