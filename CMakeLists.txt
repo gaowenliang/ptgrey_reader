@@ -94,16 +94,17 @@ target_link_libraries( PointGreyRead
     ${POINTGREY_LIBRARIES}
     ${LIBUSB_1_LIBRARIES}    )
 
-add_executable(pointgrey_reader
-    src/pointgrey_reader.cc
+add_executable(single_reader
+    src/single_reader.cc
     src/camerareader.cpp)
-target_link_libraries( pointgrey_reader
+target_link_libraries( single_reader
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     ${POINTGREY_LIBRARIES}
     ${LIBUSB_1_LIBRARIES}  dw  )
 
-add_executable(pointgrey_camera_list src/pointgrey_camera_list.cc)
+add_executable(pointgrey_camera_list
+    src/camera_list.cc)
 target_link_libraries( pointgrey_camera_list
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
