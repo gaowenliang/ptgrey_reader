@@ -103,9 +103,9 @@ target_link_libraries( single_reader
     ${POINTGREY_LIBRARIES}
     ${LIBUSB_1_LIBRARIES}  dw  )
 
-add_executable(pointgrey_camera_list
+add_executable( camera_list
     src/camera_list.cc)
-target_link_libraries( pointgrey_camera_list
+target_link_libraries( camera_list
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     ${POINTGREY_LIBRARIES}

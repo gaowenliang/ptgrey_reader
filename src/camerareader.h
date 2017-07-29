@@ -42,6 +42,7 @@ class singleCamera
     public:
     bool connectCamera( FlyCapture2::Error& error );
     bool getCameraInfo( FlyCapture2::Error& error );
+    const unsigned int getSerialNumber( ) const;
     void printCameraInfo( );
     bool getCameraConfiguration( FlyCapture2::Error& error );
     bool setCameraConfiguration( FlyCapture2::Error& error );
@@ -55,8 +56,7 @@ class singleCamera
     FlyCapture2::FC2Config& camConfig( ) { return cameraConfig; }
 
     private:
-    std::string name;
-
+    unsigned int serialNumber;
     FlyCapture2::FC2Config cameraConfig;
     FlyCapture2::CameraInfo cameraInfo;
     FlyCapture2::PGRGuid guid;
@@ -67,74 +67,150 @@ class singleCameraReader
 {
     public:
     singleCameraReader( ) {}
-    singleCameraReader( int serialNumber ) { getCameraNum( ); }
     ~singleCameraReader( ) {}
 
     public:
-    unsigned int getCameraNum( );
-    void connectToCamera( )
+    unsigned int getConnectCameraNum( )
     {
-        camera.connectCamera( error );
+        error = busMgr.GetNumOfCameras( &cameraNumber );
+        if ( error != FlyCapture2::PGRERROR_OK )
+        {
+            std::cout << "[#INFO]Error in getCameraNum " << std::endl;
+            error.PrintErrorTrace( );
+            return 0;
+        }
+        else
+        {
+            std::cout << "Number of cameras detected: " << cameraNumber << std::endl;
+            return cameraNumber;
+        }
+    }
+    void connectToCamera( bool is_print_info = false )
+    {
+        Camera( ).connectCamera( error );
 
-        camera.getCameraInfo( error );
-        camera.printCameraInfo( );
+        Camera( ).getCameraInfo( error );
+        if ( is_print_info )
+            Camera( ).printCameraInfo( );
 
-        camera.getCameraConfiguration( error );
+        Camera( ).getCameraConfiguration( error );
 
         // Set the number of driver buffers used to 10.
-        camera.camConfig( ).numBuffers = 10;
+        Camera( ).camConfig( ).numBuffers = 10;
         //    config.numImageNotifications    = 0;
         //    config.minNumImageNotifications = 0;
-        camera.camConfig( ).grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
-        camera.camConfig( ).highPerformanceRetrieveBuffer = true;
-        camera.camConfig( ).grabMode                      = FlyCapture2::DROP_FRAMES;
-        camera.setCameraConfiguration( error );
-        camera.setMetadata( error );
+        Camera( ).camConfig( ).grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
+        Camera( ).camConfig( ).highPerformanceRetrieveBuffer = true;
+        Camera( ).camConfig( ).grabMode                      = FlyCapture2::DROP_FRAMES;
+        Camera( ).setCameraConfiguration( error );
+        Camera( ).setMetadata( error );
     }
     void setCameraProperty( double frameRate, double brightness, double exposure, double gain, bool is_auto_shutter, double shutter )
     {
-        camera.setBrightness( error, brightness );
-        camera.setAutoExposure( error, exposure );
-        camera.setGain( error, gain );
-        camera.setFrameRate( error, frameRate );
+        Camera( ).setBrightness( error, brightness );
+        Camera( ).setAutoExposure( error, exposure );
+        Camera( ).setGain( error, gain );
+        Camera( ).setFrameRate( error, frameRate );
         if ( is_auto_shutter )
-            camera.setShutterAuto( error );
+            Camera( ).setShutterAuto( error );
         else
-            camera.setShutter( error, shutter );
+            Camera( ).setShutter( error, shutter );
     }
     void printCameraProperty( )
     {
-        camera.getBrightness( error );
-        camera.getFrameRate( error );
-        camera.getSharpness( error );
-        camera.getAutoExposure( error );
-        camera.getWhiteBalance( error );
-        camera.getHue( error );
-        camera.getSaturation( error );
-        camera.getGamma( error );
-        camera.getIris( error );
-        camera.getShutter( error );
-        camera.getGain( error );
-        camera.getTriggerMode( error );
-        camera.getTriggerDelay( error );
+        Camera( ).getBrightness( error );
+        Camera( ).getFrameRate( error );
+        Camera( ).getSharpness( error );
+        Camera( ).getAutoExposure( error );
+        Camera( ).getWhiteBalance( error );
+        Camera( ).getHue( error );
+        Camera( ).getSaturation( error );
+        Camera( ).getGamma( error );
+        Camera( ).getIris( error );
+        Camera( ).getShutter( error );
+        Camera( ).getGain( error );
+        Camera( ).getTriggerMode( error );
+        Camera( ).getTriggerDelay( error );
     }
-    void startCapture( ) { camera.startCapture( error ); }
+
+    bool startCamera( unsigned int serialNum,
+                      double frameRate,
+                      double brightness,
+                      double exposure,
+                      double gain,
+                      bool is_auto_shutter,
+                      double shutter,
+                      bool is_print_info = false )
+    {
+        getConnectCameraNum( );
+
+        if ( cameraNum( ) == 0 )
+        {
+            std::cout << "[#INFO] No PointGrey Camera connect." << std::endl;
+            std::cout << "[#INFO] Check Camera." << std::endl;
+            return false;
+        }
+        else if ( cameraNum( ) >= 1 )
+        {
+            bool is_camera_correct = false;
+            for ( int cameraIndex = 0; cameraIndex < cameraNum( ); ++cameraIndex )
+            {
+                BusManager( ).GetCameraFromIndex( cameraIndex, &Camera( ).UniquePGRGuid( ) );
+
+                Camera( ).connectCamera( error );
+                Camera( ).getCameraInfo( error );
+                if ( is_print_info )
+                    Camera( ).printCameraInfo( );
+                Camera( ).disconnectCamera( error );
+
+                if ( serialNum == Camera( ).getSerialNumber( ) )
+                {
+                    is_camera_correct = true;
+                    break;
+                }
+                else
+                    continue;
+            }
+            if ( !is_camera_correct )
+            {
+                std::cout << "[#INFO] No PointGrey Camera " << serialNum;
+                std::cout << " connect." << std::endl;
+                std::cout << "[#INFO] Check Camera." << std::endl;
+                return false;
+            }
+            else
+                std::cout << "[#INFO] Connect to Camera " << serialNum << std::endl;
+        }
+
+        connectToCamera( );
+
+        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
+        if ( is_print_info )
+            printCameraProperty( );
+
+        Camera( ).startCapture( error );
+
+        return true;
+    }
     cv::Mat grabImage( )
     {
         cv::Mat cv_image;
-        bool is_getNewImage = camera.captureOneImage( error, cv_image );
+        Camera( ).captureOneImage( error, cv_image );
         return cv_image;
     }
     void stopCamera( )
     {
-        camera.StopCapture( error );
-        camera.disconnectCamera( error );
+        Camera( ).StopCapture( error );
+        Camera( ).disconnectCamera( error );
     }
 
-    private:
-    unsigned int cameraNum;
-    singleCamera camera;
+    FlyCapture2::BusManager& BusManager( ) { return busMgr; }
+    singleCamera& Camera( ) { return camera; }
+    const int cameraNum( ) const { return cameraNumber; }
 
+    private:
+    unsigned int cameraNumber;
+    singleCamera camera;
     FlyCapture2::Error error;
     FlyCapture2::BusManager busMgr;
 };

@@ -24,47 +24,46 @@ main( int argc, char** argv )
     ros::NodeHandle nh( "~" );
 
     singleCameraReader camReader;
-    singleCamera camera;
 
-    bool is_pub   = true;
-    bool is_show  = true;
-    bool is_print = false;
-    int serialNum;
+    bool is_pub          = true;
+    bool is_show         = false;
+    bool is_print        = true;
+    int serialNum        = 17221121;
     bool is_auto_shutter = false;
     double brightness    = 0.1;
     double exposure      = 0.1;
     double gain          = 1.0;
-    double frameRate     = 20;
-    double shutter       = 5;
+    double frameRate     = 20.0;
+    double shutter       = 5.0;
 
+    nh.getParam( "is_pub", is_pub );
     nh.getParam( "is_show", is_show );
+    nh.getParam( "is_print", is_print );
     nh.getParam( "serialNum", serialNum );
+    nh.getParam( "is_auto_shutter", is_auto_shutter );
+    nh.getParam( "brightness", brightness );
+    nh.getParam( "exposure", exposure );
+    nh.getParam( "gain", gain );
+    nh.getParam( "frameRate", frameRate );
+    nh.getParam( "shutter", shutter );
 
     ros::Publisher imagePublisher = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
 
-    unsigned int numCameras;
-    numCameras = camReader.getCameraNum( );
+    unsigned int cameraId = serialNum;
 
     if ( is_show )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
 
-    cout << "Number of cameras detected: " << numCameras << endl;
-    camReader.busMgr.GetCameraFromIndex( 0, &camReader.camera.UniquePGRGuid( ) );
-    camReader.connectToCamera( );
-    camReader.setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
-
-    if ( is_print )
-    {
-        camReader.printCameraProperty( );
-    }
-    camReader.startCapture( );
+    camReader.startCamera( cameraId, frameRate, brightness, exposure, gain,
+                           is_auto_shutter, shutter, is_print );
 
     int imageCnt = 0;
     while ( ros::ok( ) )
     {
         cv::Mat cv_image = camReader.grabImage( );
-        if ( !getNewImage )
+        if ( cv_image.empty( ) )
         {
+            std::cout << "[#INFO] Grabbed no image." << std::endl;
             cv_image.release( );
             continue;
         }
@@ -79,7 +78,7 @@ main( int argc, char** argv )
                 cv_bridge::CvImage outImg;
                 outImg.header.stamp    = ros::Time::now( );
                 outImg.header.frame_id = "frame";
-                if ( camera.isColorCamera( ) )
+                if ( camReader.Camera( ).isColorCamera( ) )
                     outImg.encoding = sensor_msgs::image_encodings::BGR8;
                 else
                     outImg.encoding = sensor_msgs::image_encodings::MONO8;
@@ -97,9 +96,7 @@ main( int argc, char** argv )
         }
     }
 
-    camera.StopCapture( error );
-
-    camera.disconnectCamera( error );
+    camReader.stopCamera( );
 
     cout << "Done! Press Enter to exit..." << endl;
 

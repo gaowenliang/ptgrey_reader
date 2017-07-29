@@ -1,22 +1,5 @@
 #include "camerareader.h"
 
-unsigned int
-singleCameraReader::getCameraNum( )
-{
-    error = busMgr.GetNumOfCameras( &cameraNum );
-    if ( error != FlyCapture2::PGRERROR_OK )
-    {
-        std::cout << "[#INFO]Error in getCameraNum " << std::endl;
-        error.PrintErrorTrace( );
-        return 0;
-    }
-    else
-    {
-        std::cout << "Number of cameras detected: " << cameraNum << std::endl;
-        return cameraNum;
-    }
-}
-
 float
 singleCamera::getFrameRate( FlyCapture2::Error& error )
 {
@@ -91,7 +74,8 @@ singleCamera::getWhiteBalance( FlyCapture2::Error& error )
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::WHITE_BALANCE;
     error      = camera.GetProperty( &fProp );
-    std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA << " B:" << fProp.valueB << std::endl;
+    std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA
+              << " B:" << fProp.valueB << std::endl;
 
     std::cout << " autoManualMode " << fProp.autoManualMode << std::endl;
     std::cout << " onOff " << fProp.onOff << std::endl;
@@ -287,7 +271,16 @@ singleCamera::getCameraInfo( FlyCapture2::Error& error )
         return false;
     }
     else
+    {
+        serialNumber = cameraInfo.serialNumber;
         return true;
+    }
+}
+
+const unsigned int
+singleCamera::getSerialNumber( ) const
+{
+    return serialNumber;
 }
 
 void
