@@ -88,6 +88,12 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_executable(multipleCameraEx src/multipleCameraEx.cc)
+target_link_libraries( multipleCameraEx
+    ${catkin_LIBRARIES}
+    ${POINTGREY_LIBRARIES}
+    ${LIBUSB_1_LIBRARIES}    )
+
 add_executable(PointGreyRead src/flyCapture2.cc)
 target_link_libraries( PointGreyRead
     ${catkin_LIBRARIES}
@@ -96,8 +102,19 @@ target_link_libraries( PointGreyRead
 
 add_executable(single_reader
     src/single_reader.cc
-    src/camerareader.cpp)
+    src/singleCamera.cpp
+    src/singleCameraReader.cpp)
 target_link_libraries( single_reader
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${POINTGREY_LIBRARIES}
+    ${LIBUSB_1_LIBRARIES}  dw  )
+
+add_executable(multi_reader
+    src/milti_reader.cc
+    src/multiCamera.cpp
+    src/multiCameraReader.cpp)
+target_link_libraries( multi_reader
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     ${POINTGREY_LIBRARIES}

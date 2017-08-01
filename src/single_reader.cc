@@ -6,7 +6,7 @@ backward::SignalHandling sh;
 }
 
 //#include <code_utils/sys_utils.h>
-#include "camerareader.h"
+#include "singleCameraReader.h"
 #include <cv_bridge/cv_bridge.h>
 #include <flycapture/FlyCapture2.h>
 #include <iostream>
@@ -14,13 +14,10 @@ backward::SignalHandling sh;
 #include <ros/ros.h>
 #include <sstream>
 
-using namespace FlyCapture2;
-using namespace std;
-
 int
 main( int argc, char** argv )
 {
-    ros::init( argc, argv, "pointGreyReader" );
+    ros::init( argc, argv, "singleReader" );
     ros::NodeHandle nh( "~" );
 
     singleCameraReader camReader;
@@ -71,7 +68,7 @@ main( int argc, char** argv )
         {
             ++imageCnt;
             if ( is_print )
-                cout << "Grabbed image " << imageCnt << endl;
+                std::cout << "Grabbed image " << imageCnt << std::endl;
 
             if ( is_pub )
             {
@@ -98,7 +95,7 @@ main( int argc, char** argv )
 
     camReader.stopCamera( );
 
-    cout << "Done! Press Enter to exit..." << endl;
+    std::cout << "[#INFO] stop Camera Done!" << std::endl;
 
     return 0;
 }

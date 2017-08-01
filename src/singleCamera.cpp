@@ -1,11 +1,59 @@
-#include "camerareader.h"
+#include "singleCamera.h"
+
+singleCamera::singleCamera( ) { pCamera = new FlyCapture2::Camera( ); }
+
+singleCamera::singleCamera( unsigned int serialNum )
+: serialNumber( serialNum )
+{
+    pCamera = new FlyCapture2::Camera( );
+}
+
+singleCamera::~singleCamera( ) { delete pCamera; }
+
+bool
+singleCamera::initCamera( FlyCapture2::Error& error, FlyCapture2::BusManager& BusMana )
+{
+    error = BusMana.GetCameraFromSerialNumber( serialNumber, &guid );
+
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in GetCameraFromSerialNumber." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+    {
+        std::cout << "[#INFO] Connect to Camera " << serialNumber << std::endl;
+        return true;
+    }
+}
+
+bool
+singleCamera::reInitCamera( FlyCapture2::Error& error, unsigned int serialNum, FlyCapture2::BusManager& BusMana )
+{
+    serialNumber = serialNum;
+
+    error = BusMana.GetCameraFromSerialNumber( serialNumber, &guid );
+
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in GetCameraFromSerialNumber." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+    {
+        std::cout << "[#INFO] Connect to Camera " << serialNum << std::endl;
+        return true;
+    }
+}
 
 float
 singleCamera::getFrameRate( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::FRAME_RATE;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Frame Rate: " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -22,7 +70,7 @@ singleCamera::getBrightness( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::BRIGHTNESS;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Brightness: " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -39,7 +87,7 @@ singleCamera::getAutoExposure( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::AUTO_EXPOSURE;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " AutoExposure " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -56,7 +104,7 @@ singleCamera::getSharpness( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::SHARPNESS;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Sharpness " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -73,7 +121,7 @@ singleCamera::getWhiteBalance( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::WHITE_BALANCE;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA
               << " B:" << fProp.valueB << std::endl;
 
@@ -96,7 +144,7 @@ singleCamera::getHue( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::HUE;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Hue " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -113,7 +161,7 @@ singleCamera::getSaturation( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::SATURATION;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Saturation " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -130,7 +178,7 @@ singleCamera::getGamma( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::GAMMA;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Gamma " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -147,7 +195,7 @@ singleCamera::getIris( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::IRIS;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Iris " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -164,7 +212,7 @@ singleCamera::getShutter( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::SHUTTER;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Shutter " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -181,7 +229,7 @@ singleCamera::getGain( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::GAIN;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " Gain " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -198,7 +246,7 @@ singleCamera::getTriggerMode( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::TRIGGER_MODE;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " TriggerMode " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -215,7 +263,7 @@ singleCamera::getTriggerDelay( FlyCapture2::Error& error )
 {
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::TRIGGER_DELAY;
-    error      = camera.GetProperty( &fProp );
+    error      = pCamera->GetProperty( &fProp );
     std::cout << " TriggerDelay " << fProp.absValue << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -236,7 +284,7 @@ singleCamera::connectCamera( FlyCapture2::Error& error )
     while ( tryConnectIndex < maxTryConnectTimes )
     {
         // Connect to a camera
-        error = camera.Connect( &guid );
+        error = pCamera->Connect( &guid );
         if ( error != FlyCapture2::PGRERROR_OK )
         {
             std::cout << "[#INFO] Error in Connect." << std::endl;
@@ -245,7 +293,7 @@ singleCamera::connectCamera( FlyCapture2::Error& error )
         }
         else
         {
-            if ( camera.IsConnected( ) )
+            if ( pCamera->IsConnected( ) )
             {
                 std::cout << "[#INFO] Camera Connected." << std::endl;
                 return true;
@@ -263,7 +311,7 @@ bool
 singleCamera::getCameraInfo( FlyCapture2::Error& error )
 {
     // Connect to a camera
-    error = camera.GetCameraInfo( &cameraInfo );
+    error = pCamera->GetCameraInfo( &cameraInfo );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in GetCameraInfo " << std::endl;
@@ -302,7 +350,7 @@ singleCamera::printCameraInfo( )
 bool
 singleCamera::getCameraConfiguration( FlyCapture2::Error& error )
 {
-    error = camera.GetConfiguration( &cameraConfig );
+    error = pCamera->GetConfiguration( &cameraConfig );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in GetConfiguration " << std::endl;
@@ -316,7 +364,7 @@ singleCamera::getCameraConfiguration( FlyCapture2::Error& error )
 bool
 singleCamera::setCameraConfiguration( FlyCapture2::Error& error )
 {
-    error = camera.SetConfiguration( &cameraConfig );
+    error = pCamera->SetConfiguration( &cameraConfig );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setCameraConfiguration " << std::endl;
@@ -331,7 +379,7 @@ bool
 singleCamera::startCapture( FlyCapture2::Error& error )
 {
     // Start capturing images
-    error = camera.StartCapture( );
+    error = pCamera->StartCapture( );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in StartCapture " << std::endl;
@@ -348,7 +396,7 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image )
     FlyCapture2::Image rawImage;
 
     // Retrieve an image
-    error = camera.RetrieveBuffer( &rawImage );
+    error = pCamera->RetrieveBuffer( &rawImage );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         error.PrintErrorTrace( );
@@ -373,9 +421,9 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image )
 
     cv::Mat cv_image;
     if ( cameraInfo.isColorCamera )
-        cv_image = cv::Mat( 1024, 1280, CV_8UC3, pdata );
+        cv_image = cv::Mat( rawImage.GetRows( ), rawImage.GetCols( ), CV_8UC3, pdata );
     else
-        cv_image = cv::Mat( 1024, 1280, CV_8UC1, pdata );
+        cv_image = cv::Mat( rawImage.GetRows( ), rawImage.GetCols( ), CV_8UC1, pdata );
 
     cv_image.copyTo( image );
 
@@ -386,7 +434,7 @@ bool
 singleCamera::StopCapture( FlyCapture2::Error& error )
 {
     // Stop capturing images
-    error = camera.StopCapture( );
+    error = pCamera->StopCapture( );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in StopCapture " << std::endl;
@@ -401,7 +449,7 @@ bool
 singleCamera::disconnectCamera( FlyCapture2::Error& error )
 {
     // Disconnect the camera
-    error = camera.Disconnect( );
+    error = pCamera->Disconnect( );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in Disconnect " << std::endl;
@@ -410,6 +458,36 @@ singleCamera::disconnectCamera( FlyCapture2::Error& error )
     }
     else
         return true;
+}
+
+FlyCapture2::PGRGuid&
+singleCamera::UniquePGRGuid( )
+{
+    return guid;
+}
+
+FlyCapture2::CameraInfo&
+singleCamera::camInfo( )
+{
+    return cameraInfo;
+}
+
+FlyCapture2::FC2Config&
+singleCamera::camConfig( )
+{
+    return cameraConfig;
+}
+
+void
+singleCamera::setSerialNumber( unsigned int serial )
+{
+    serialNumber = serial;
+}
+
+FlyCapture2::Camera*
+singleCamera::getPCamera( ) const
+{
+    return pCamera;
 }
 
 bool
@@ -425,7 +503,7 @@ singleCamera::setMetadata( FlyCapture2::Error& error )
     info.whiteBalance.onOff = true;
     info.frameCounter.onOff = true;
     info.ROIPosition.onOff  = true;
-    error                   = camera.SetEmbeddedImageInfo( &info );
+    error                   = pCamera->SetEmbeddedImageInfo( &info );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setMetadata." << std::endl;
@@ -441,7 +519,7 @@ singleCamera::setFrameRate( FlyCapture2::Error& error, float rate )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::FRAME_RATE;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     //    std::cout << "in setFrameRate" << std::endl;
     //    std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
@@ -459,7 +537,7 @@ singleCamera::setFrameRate( FlyCapture2::Error& error, float rate )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setFrameRate " << std::endl;
@@ -475,7 +553,7 @@ singleCamera::setBrightness( FlyCapture2::Error& error, float brightness )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::BRIGHTNESS;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::BRIGHTNESS;
@@ -487,7 +565,7 @@ singleCamera::setBrightness( FlyCapture2::Error& error, float brightness )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setBrightness " << std::endl;
@@ -503,7 +581,7 @@ singleCamera::setAutoExposure( FlyCapture2::Error& error, float exposure )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::AUTO_EXPOSURE;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::AUTO_EXPOSURE;
@@ -515,7 +593,7 @@ singleCamera::setAutoExposure( FlyCapture2::Error& error, float exposure )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setAutoExposure " << std::endl;
@@ -531,7 +609,7 @@ singleCamera::setGamma( FlyCapture2::Error& error, float gamma )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::GAMMA;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     //    std::cout << "in setGamma" << std::endl;
     //    std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
@@ -549,7 +627,7 @@ singleCamera::setGamma( FlyCapture2::Error& error, float gamma )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setGamma." << std::endl;
@@ -565,7 +643,7 @@ singleCamera::setShutterAuto( FlyCapture2::Error& error )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::SHUTTER;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::SHUTTER;
@@ -573,7 +651,7 @@ singleCamera::setShutterAuto( FlyCapture2::Error& error )
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setShutterAuto." << std::endl;
@@ -595,7 +673,7 @@ singleCamera::setShutter( FlyCapture2::Error& error, float shutter )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::SHUTTER;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     // std::cout << "in setShutter" << std::endl;
     // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
@@ -613,7 +691,7 @@ singleCamera::setShutter( FlyCapture2::Error& error, float shutter )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setShutter." << std::endl;
@@ -629,7 +707,7 @@ singleCamera::setGain( FlyCapture2::Error& error, float exposure )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::GAIN;
-    error      = camera.GetPropertyInfo( &pInfo );
+    error      = pCamera->GetPropertyInfo( &pInfo );
 
     // std::cout << "in setGain" << std::endl;
     // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
@@ -647,7 +725,7 @@ singleCamera::setGain( FlyCapture2::Error& error, float exposure )
     else
         prop.absValue = pInfo.absMax;
 
-    error = camera.SetProperty( &prop );
+    error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setGain " << std::endl;
