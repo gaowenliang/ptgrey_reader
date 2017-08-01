@@ -15,6 +15,7 @@ singleCamera::initCamera( FlyCapture2::Error& error, FlyCapture2::BusManager& Bu
 {
     error = BusMana.GetCameraFromSerialNumber( serialNumber, &guid );
 
+    std::cout << " serialNumber " << serialNumber << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in GetCameraFromSerialNumber." << std::endl;
@@ -248,6 +249,7 @@ singleCamera::getTriggerMode( FlyCapture2::Error& error )
     fProp.type = FlyCapture2::TRIGGER_MODE;
     error      = pCamera->GetProperty( &fProp );
     std::cout << " TriggerMode " << fProp.absValue << std::endl;
+    std::cout << " TriggerMode onOff " << fProp.onOff << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in getTriggerMode " << std::endl;
@@ -284,6 +286,7 @@ singleCamera::connectCamera( FlyCapture2::Error& error )
     while ( tryConnectIndex < maxTryConnectTimes )
     {
         // Connect to a camera
+        ++tryConnectIndex;
         error = pCamera->Connect( &guid );
         if ( error != FlyCapture2::PGRERROR_OK )
         {
@@ -301,7 +304,6 @@ singleCamera::connectCamera( FlyCapture2::Error& error )
             else
                 continue;
         }
-        ++tryConnectIndex;
     }
     std::cout << "[#INFO] Cannot connect to the Camera." << std::endl;
     return false;
@@ -391,7 +393,7 @@ singleCamera::startCapture( FlyCapture2::Error& error )
 }
 
 bool
-singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image )
+singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCapture2::TimeStamp& time )
 {
     FlyCapture2::Image rawImage;
 
@@ -403,6 +405,8 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image )
         std::cout << "[#INFO]Error in RetrieveBuffer, captureOneImage " << std::endl;
         return false;
     }
+
+    time = rawImage.GetTimeStamp( );
 
     // Create a converted image
     FlyCapture2::Image convertedImage;

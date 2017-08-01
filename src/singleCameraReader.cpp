@@ -61,47 +61,51 @@ singleCameraReader::startCamera( unsigned int serialNum,
 {
     getConnectCameraNum( );
 
-    if ( cameraNum( ) == 0 )
+    if ( cameraNum( ) <= 0 )
     {
         std::cout << "[#INFO] No PointGrey Camera connect." << std::endl;
         std::cout << "[#INFO] Check Camera." << std::endl;
         return false;
     }
-    else if ( cameraNum( ) >= 1 )
+    else if ( cameraNum( ) > 0 )
         Camera( ).initCamera( error, BusManager( ) );
 
-    Camera( ).connectCamera( error );
+    bool is_connected = Camera( ).connectCamera( error );
+    if ( is_connected )
+    {
+        Camera( ).getCameraInfo( error );
+        if ( is_print_info )
+            Camera( ).printCameraInfo( );
 
-    Camera( ).getCameraInfo( error );
-    if ( is_print_info )
-        Camera( ).printCameraInfo( );
+        Camera( ).getCameraConfiguration( error );
 
-    Camera( ).getCameraConfiguration( error );
+        // Set the number of driver buffers used to 10.
+        Camera( ).camConfig( ).numBuffers = 10;
+        //    config.numImageNotifications    = 0;
+        //    config.minNumImageNotifications = 0;
+        Camera( ).camConfig( ).grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
+        Camera( ).camConfig( ).highPerformanceRetrieveBuffer = true;
+        Camera( ).camConfig( ).grabMode                      = FlyCapture2::DROP_FRAMES;
+        Camera( ).setCameraConfiguration( error );
+        Camera( ).setMetadata( error );
 
-    // Set the number of driver buffers used to 10.
-    Camera( ).camConfig( ).numBuffers = 10;
-    //    config.numImageNotifications    = 0;
-    //    config.minNumImageNotifications = 0;
-    Camera( ).camConfig( ).grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
-    Camera( ).camConfig( ).highPerformanceRetrieveBuffer = true;
-    Camera( ).camConfig( ).grabMode                      = FlyCapture2::DROP_FRAMES;
-    Camera( ).setCameraConfiguration( error );
-    Camera( ).setMetadata( error );
+        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
+        if ( is_print_info )
+            printCameraProperty( );
 
-    setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
-    if ( is_print_info )
-        printCameraProperty( );
+        Camera( ).startCapture( error );
 
-    Camera( ).startCapture( error );
-
-    return true;
+        return true;
+    }
+    else
+        return false;
 }
 
-cv::Mat
+cvImage
 singleCameraReader::grabImage( )
 {
-    cv::Mat cv_image;
-    Camera( ).captureOneImage( error, cv_image );
+    cvImage cv_image;
+    Camera( ).captureOneImage( error, cv_image.image, cv_image.time );
     return cv_image;
 }
 

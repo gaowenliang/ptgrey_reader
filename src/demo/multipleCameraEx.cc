@@ -1,3 +1,9 @@
+#define BACKWARD_HAS_DW 1
+#include "../backward.hpp"
+namespace backward
+{
+backward::SignalHandling sh;
+}
 
 //#include "FlyCapture2.h"
 #include <flycapture/FlyCapture2.h>
@@ -108,30 +114,66 @@ main( int /*argc*/, char** /*argv*/ )
         // Set all cameras to a specific mode and frame rate so they
         // can be synchronized
 
-        error = ppCameras[i]->SetVideoModeAndFrameRate( VIDEOMODE_640x480Y8, FRAMERATE_15 );
-        if ( error != PGRERROR_OK )
-        {
-            PrintError( error );
-            cout << "Error starting SetVideoModeAndFrameRate cameras. " << endl;
-            cout << "This example requires cameras to be able to set to 640x480          "
-                    "  Y8 at "
-                    "        30fps. "
-                 << endl;
-            cout << "If your camera does not support this mode, please edit the"
-                    "  source "
-                    "code and recompile the application. "
-                 << endl;
-            cout << "Press Enter to exit. " << endl;
+        float rate = 10.0;
+        FlyCapture2::PropertyInfo pInfo;
+        pInfo.type = FlyCapture2::FRAME_RATE;
+        error      = ppCameras[i]->GetPropertyInfo( &pInfo );
 
-            cin.ignore( );
+        std::cout << "in setFrameRate" << std::endl;
+        std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+        std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+        std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+        std::cout << "             absMax | " << pInfo.absMax << std::endl;
+
+        FlyCapture2::Property prop;
+        prop.type           = FlyCapture2::FRAME_RATE;
+        prop.autoManualMode = ( false && pInfo.autoSupported );
+        prop.absControl     = pInfo.absValSupported;
+        prop.onOff          = pInfo.onOffSupported;
+        if ( rate < pInfo.absMax )
+            prop.absValue = rate;
+        else
+            prop.absValue = pInfo.absMax;
+
+        error = ppCameras[i]->SetProperty( &prop );
+        if ( error != FlyCapture2::PGRERROR_OK )
+        {
+            std::cout << "[#INFO]Error in setFrameRate " << std::endl;
+            error.PrintErrorTrace( );
             return -1;
         }
+
+        //          error = ppCameras[i]->SetVideoModeAndFrameRate(
+        //          VIDEOMODE_640x480Y8,
+        //  FRAMERATE_15 );
+        //  if ( error != PGRERROR_OK )
+        //  {
+        //      PrintError( error );
+        //      cout << "Error starting SetVideoModeAndFrameRate cameras. "
+        //      << endl;
+        //      cout << "This example requires cameras to be able to set to
+        //      640x480
+        //      "
+        //              "  Y8 at "
+        //              "        30fps. "
+        //           << endl;
+        //      cout << "If your camera does not support this mode, please
+        //      edit the"
+        //              "  source "
+        //              "code and recompile the application. "
+        //           << endl;
+        //      cout << "Press Enter to exit. " << endl;
+
+        //      cin.ignore( );
+        //      return -1;
+        //  }
     }
 
     error = Camera::StartSyncCapture( numCameras, ( const Camera** )ppCameras );
     if ( error != PGRERROR_OK )
     {
         PrintError( error );
+        cout << "in StartSyncCapture" << std::endl;
         cout << "Error starting cameras. " << endl;
         cout << "This example requires cameras to be able to set to 640x480 Y8 at 30fps. " << endl;
         cout << "If your camera does not support this mode, please edit the source code "

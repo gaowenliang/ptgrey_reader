@@ -51,7 +51,7 @@ class singleCamera
     bool getCameraConfiguration( FlyCapture2::Error& error );
     bool setCameraConfiguration( FlyCapture2::Error& error );
     bool startCapture( FlyCapture2::Error& error );
-    bool captureOneImage( FlyCapture2::Error& error, cv::Mat& image );
+    bool captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCapture2::TimeStamp& time );
     bool StopCapture( FlyCapture2::Error& error );
     bool disconnectCamera( FlyCapture2::Error& error );
 

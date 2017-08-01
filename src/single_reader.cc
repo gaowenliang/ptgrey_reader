@@ -20,8 +20,6 @@ main( int argc, char** argv )
     ros::init( argc, argv, "singleReader" );
     ros::NodeHandle nh( "~" );
 
-    singleCameraReader camReader;
-
     bool is_pub          = true;
     bool is_show         = false;
     bool is_print        = true;
@@ -48,20 +46,26 @@ main( int argc, char** argv )
 
     unsigned int cameraId = serialNum;
 
+    singleCameraReader camReader( cameraId );
+
     if ( is_show )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
 
-    camReader.startCamera( cameraId, frameRate, brightness, exposure, gain,
-                           is_auto_shutter, shutter, is_print );
+    bool is_cameraStarted = camReader.startCamera( cameraId, frameRate, brightness, exposure,
+                                                   gain, is_auto_shutter, shutter, is_print );
+    if ( !is_cameraStarted )
+    {
+        ros::shutdown( );
+        std::cout << "[#INFO] Camera cannot start" << std::endl;
+    }
 
     int imageCnt = 0;
     while ( ros::ok( ) )
     {
-        cv::Mat cv_image = camReader.grabImage( );
-        if ( cv_image.empty( ) )
+        cvImage cv_image = camReader.grabImage( );
+        if ( cv_image.image.empty( ) )
         {
             std::cout << "[#INFO] Grabbed no image." << std::endl;
-            cv_image.release( );
             continue;
         }
         else
@@ -73,23 +77,23 @@ main( int argc, char** argv )
             if ( is_pub )
             {
                 cv_bridge::CvImage outImg;
-                outImg.header.stamp    = ros::Time::now( );
-                outImg.header.frame_id = "frame";
+                outImg.header.stamp.sec  = cv_image.time.seconds;
+                outImg.header.stamp.nsec = cv_image.time.microSeconds * 1000;
+                outImg.header.frame_id   = "frame";
                 if ( camReader.Camera( ).isColorCamera( ) )
                     outImg.encoding = sensor_msgs::image_encodings::BGR8;
                 else
                     outImg.encoding = sensor_msgs::image_encodings::MONO8;
 
-                outImg.image = cv_image;
+                outImg.image = cv_image.image;
                 imagePublisher.publish( outImg );
             }
 
             if ( is_show )
             {
-                cv::imshow( "image", cv_image );
+                cv::imshow( "image", cv_image.image );
                 cv::waitKey( 10 );
             }
-            cv_image.release( );
         }
     }
 

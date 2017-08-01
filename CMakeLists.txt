@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pointgrey_reader)
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "-std=c++11 -march=native ")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -fPIC")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -fPIC  -ldl")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -88,17 +88,18 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(multipleCameraEx src/multipleCameraEx.cc)
-target_link_libraries( multipleCameraEx
-    ${catkin_LIBRARIES}
-    ${POINTGREY_LIBRARIES}
-    ${LIBUSB_1_LIBRARIES}    )
+add_executable(multipleCameraEx    src/demo/multipleCameraEx.cc)
+target_link_libraries( multipleCameraEx    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )
+add_executable(hdr    src/demo/hdr.cc)
+target_link_libraries( hdr    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )
 
-add_executable(PointGreyRead src/flyCapture2.cc)
-target_link_libraries( PointGreyRead
-    ${catkin_LIBRARIES}
-    ${POINTGREY_LIBRARIES}
-    ${LIBUSB_1_LIBRARIES}    )
+add_executable(asyncTrigger    src/demo/asyncTrigger.cc)
+target_link_libraries( asyncTrigger dw
+    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}      )
+add_executable(PointGreyRead    src/demo/flyCapture2.cc)
+target_link_libraries( PointGreyRead    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}    )
+add_executable(extendedShutter    src/demo/extendedShutter.cc)
+target_link_libraries( extendedShutter    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}    )
 
 add_executable(single_reader
     src/single_reader.cc

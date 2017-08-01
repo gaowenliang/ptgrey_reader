@@ -4,10 +4,24 @@
 #include "singleCamera.h"
 #include <opencv2/opencv.hpp>
 
+class cvImage
+{
+    public:
+    cvImage( ) {}
+    ~cvImage( ) { image.release( ); }
+
+    cv::Mat image;
+    FlyCapture2::TimeStamp time;
+};
+
 class singleCameraReader
 {
     public:
     singleCameraReader( ) {}
+    singleCameraReader( const unsigned int serial_num )
+    : camera( serial_num )
+    {
+    }
     ~singleCameraReader( ) {}
 
     public:
@@ -28,7 +42,7 @@ class singleCameraReader
                       bool is_auto_shutter,
                       double shutter,
                       bool is_print_info = false );
-    cv::Mat grabImage( );
+    cvImage grabImage( );
     void stopCamera( );
 
     FlyCapture2::BusManager& BusManager( );
