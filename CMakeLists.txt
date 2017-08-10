@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(pointgrey_reader)
+project(ptgrey_reader)
 
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS "-std=c++11 -march=native ")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -fPIC  -ldl")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -fPIC ")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -94,37 +94,17 @@ add_executable(hdr    src/demo/hdr.cc)
 target_link_libraries( hdr    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )
 
 add_executable(asyncTrigger    src/demo/asyncTrigger.cc)
-target_link_libraries( asyncTrigger dw
-    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}      )
+target_link_libraries( asyncTrigger dw    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}      )
 add_executable(PointGreyRead    src/demo/flyCapture2.cc)
 target_link_libraries( PointGreyRead    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}    )
 add_executable(extendedShutter    src/demo/extendedShutter.cc)
 target_link_libraries( extendedShutter    ${catkin_LIBRARIES}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}    )
 
-add_executable(single_reader
-    src/single_reader.cc
-    src/singleCamera.cpp
-    src/singleCameraReader.cpp)
-target_link_libraries( single_reader
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${POINTGREY_LIBRARIES}
-    ${LIBUSB_1_LIBRARIES}  dw  )
+add_executable(single_reader    src/single_reader.cc    src/ptgrey_lib/singleCamera.cpp    src/ptgrey_lib/singleCameraReader.cpp)
+target_link_libraries( single_reader    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )
 
-add_executable(multi_reader
-    src/milti_reader.cc
-    src/multiCamera.cpp
-    src/multiCameraReader.cpp)
-target_link_libraries( multi_reader
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${POINTGREY_LIBRARIES}
-    ${LIBUSB_1_LIBRARIES}  dw  )
+add_executable(multi_reader    src/milti_reader.cc   src/ptgrey_lib/singleCameraReader.cpp  src/ptgrey_lib/multiCamera.cpp    src/ptgrey_lib/multiCameraReader.cpp  src/ptgrey_lib/singleCamera.cpp  )
+target_link_libraries( multi_reader    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )
 
-add_executable( camera_list
-    src/camera_list.cc)
-target_link_libraries( camera_list
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${POINTGREY_LIBRARIES}
-    ${LIBUSB_1_LIBRARIES}  dw  )
+add_executable( camera_list    src/camera_list.cc)
+target_link_libraries( camera_list    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  dw  )

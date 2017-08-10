@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>pointgrey_reader</name>
+  <name>ptgrey_reader</name>
   <version>0.0.0</version>
-  <description>The pointgrey_reader package</description>
+  <description>The ptgrey_reader package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/pointgrey_reader</url> -->
+  <!-- <url type="website">http://wiki.ros.org/ptgrey_reader</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->

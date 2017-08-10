@@ -1,5 +1,7 @@
 #include "singleCameraReader.h"
 
+using namespace ptgrey_reader;
+
 unsigned int
 singleCameraReader::getConnectCameraNum( )
 {
@@ -47,6 +49,7 @@ singleCameraReader::printCameraProperty( )
     Camera( ).getGain( error );
     Camera( ).getTriggerMode( error );
     Camera( ).getTriggerDelay( error );
+    std::cout << "[#INFO] print Camera Property Done." << std::endl;
 }
 
 bool
@@ -94,6 +97,7 @@ singleCameraReader::startCamera( unsigned int serialNum,
             printCameraProperty( );
 
         Camera( ).startCapture( error );
+        std::cout << "[#INFO] start Capture." << std::endl;
 
         return true;
     }
@@ -133,3 +137,12 @@ singleCameraReader::cameraNum( ) const
 {
     return cameraNumber;
 }
+
+ptgrey_reader::singleCameraReader::singleCameraReader( ) {}
+
+singleCameraReader::singleCameraReader( const unsigned int serial_num )
+: camera( serial_num )
+{
+}
+
+singleCameraReader::~singleCameraReader( ) {}

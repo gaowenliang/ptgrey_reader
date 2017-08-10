@@ -4,25 +4,15 @@
 #include "singleCamera.h"
 #include <opencv2/opencv.hpp>
 
-class cvImage
+namespace ptgrey_reader
 {
-    public:
-    cvImage( ) {}
-    ~cvImage( ) { image.release( ); }
-
-    cv::Mat image;
-    FlyCapture2::TimeStamp time;
-};
 
 class singleCameraReader
 {
     public:
-    singleCameraReader( ) {}
-    singleCameraReader( const unsigned int serial_num )
-    : camera( serial_num )
-    {
-    }
-    ~singleCameraReader( ) {}
+    singleCameraReader( );
+    singleCameraReader( const unsigned int serial_num );
+    ~singleCameraReader( );
 
     public:
     unsigned int getConnectCameraNum( );
@@ -55,5 +45,5 @@ class singleCameraReader
     FlyCapture2::Error error;
     FlyCapture2::BusManager busMgr;
 };
-
+}
 #endif // SINGLECAMERAREADER_H

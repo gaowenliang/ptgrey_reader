@@ -143,30 +143,30 @@ main( int /*argc*/, char** /*argv*/ )
             return -1;
         }
 
-        //          error = ppCameras[i]->SetVideoModeAndFrameRate(
-        //          VIDEOMODE_640x480Y8,
-        //  FRAMERATE_15 );
-        //  if ( error != PGRERROR_OK )
-        //  {
-        //      PrintError( error );
-        //      cout << "Error starting SetVideoModeAndFrameRate cameras. "
-        //      << endl;
-        //      cout << "This example requires cameras to be able to set to
-        //      640x480
-        //      "
-        //              "  Y8 at "
-        //              "        30fps. "
-        //           << endl;
-        //      cout << "If your camera does not support this mode, please
-        //      edit the"
-        //              "  source "
-        //              "code and recompile the application. "
-        //           << endl;
-        //      cout << "Press Enter to exit. " << endl;
+        FlyCapture2::VideoMode vmode;
+        FlyCapture2::FrameRate vrate;
+        //        error = ppCameras[i]->GetVideoModeAndFrameRate( vmode, vrate );
 
-        //      cin.ignore( );
-        //      return -1;
-        //  }
+        error = ppCameras[i]->SetVideoModeAndFrameRate( VIDEOMODE_FORMAT7, FRAMERATE_FORMAT7 );
+        if ( error != PGRERROR_OK )
+        {
+            PrintError( error );
+            cout << "Error starting SetVideoModeAndFrameRate cameras. " << endl;
+            cout << "This example requires cameras to be able to set to              "
+                    "640x480              "
+                    "  Y8 at "
+                    "        30fps. "
+                 << endl;
+            cout
+            << "If your camera does not support this mode, please            edit the "
+               "  source "
+               "code and recompile the application. "
+            << endl;
+            cout << "Press Enter to exit. " << endl;
+
+            cin.ignore( );
+            return -1;
+        }
     }
 
     error = Camera::StartSyncCapture( numCameras, ( const Camera** )ppCameras );

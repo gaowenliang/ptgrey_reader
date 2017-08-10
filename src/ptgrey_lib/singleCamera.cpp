@@ -1,5 +1,7 @@
 #include "singleCamera.h"
 
+using namespace ptgrey_reader;
+
 singleCamera::singleCamera( ) { pCamera = new FlyCapture2::Camera( ); }
 
 singleCamera::singleCamera( unsigned int serialNum )
@@ -126,9 +128,9 @@ singleCamera::getWhiteBalance( FlyCapture2::Error& error )
     std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA
               << " B:" << fProp.valueB << std::endl;
 
-    std::cout << " autoManualMode " << fProp.autoManualMode << std::endl;
-    std::cout << " onOff " << fProp.onOff << std::endl;
-    std::cout << " onePush " << fProp.onePush << std::endl;
+    //    std::cout << " autoManualMode " << fProp.autoManualMode << std::endl;
+    //    std::cout << " onOff " << fProp.onOff << std::endl;
+    //    std::cout << " onePush " << fProp.onePush << std::endl;
 
     if ( error != FlyCapture2::PGRERROR_OK )
     {
@@ -277,6 +279,24 @@ singleCamera::getTriggerDelay( FlyCapture2::Error& error )
         return fProp.absValue;
 }
 
+float
+singleCamera::getCameraTemperature( FlyCapture2::Error& error )
+{
+    FlyCapture2::Property fProp;
+    fProp.type = FlyCapture2::TEMPERATURE;
+    error      = pCamera->GetProperty( &fProp );
+
+    std::cout << " Temperature " << fProp.absValue << std::endl;
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in getCameraTemperature " << std::endl;
+        error.PrintErrorTrace( );
+        return -1;
+    }
+    else
+        return fProp.absValue;
+}
+
 bool
 singleCamera::connectCamera( FlyCapture2::Error& error )
 {
@@ -376,7 +396,19 @@ singleCamera::setCameraConfiguration( FlyCapture2::Error& error )
     else
         return true;
 }
-
+bool
+singleCamera::setCameraConfiguration( FlyCapture2::Error& error, FlyCapture2::FC2Config& cfg )
+{
+    error = pCamera->SetConfiguration( &cfg );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setCameraConfiguration " << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
 bool
 singleCamera::startCapture( FlyCapture2::Error& error )
 {
@@ -407,6 +439,7 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     }
 
     time = rawImage.GetTimeStamp( );
+    //    std::cout << "time " << time.seconds << " " << time.microSeconds << std::endl;
 
     // Create a converted image
     FlyCapture2::Image convertedImage;
@@ -707,7 +740,7 @@ singleCamera::setShutter( FlyCapture2::Error& error, float shutter )
 }
 
 bool
-singleCamera::setGain( FlyCapture2::Error& error, float exposure )
+singleCamera::setGain( FlyCapture2::Error& error, float gain )
 {
     FlyCapture2::PropertyInfo pInfo;
     pInfo.type = FlyCapture2::GAIN;
@@ -724,8 +757,8 @@ singleCamera::setGain( FlyCapture2::Error& error, float exposure )
     prop.autoManualMode = false;
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( exposure < pInfo.absMax )
-        prop.absValue = exposure;
+    if ( gain < pInfo.absMax )
+        prop.absValue = gain;
     else
         prop.absValue = pInfo.absMax;
 

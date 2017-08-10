@@ -6,7 +6,7 @@ backward::SignalHandling sh;
 }
 
 //#include <code_utils/sys_utils.h>
-#include "singleCameraReader.h"
+#include "ptgrey_lib/singleCameraReader.h"
 #include <cv_bridge/cv_bridge.h>
 #include <flycapture/FlyCapture2.h>
 #include <iostream>
@@ -46,7 +46,7 @@ main( int argc, char** argv )
 
     unsigned int cameraId = serialNum;
 
-    singleCameraReader camReader( cameraId );
+    ptgrey_reader::singleCameraReader camReader( cameraId );
 
     if ( is_show )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
@@ -59,10 +59,12 @@ main( int argc, char** argv )
         std::cout << "[#INFO] Camera cannot start" << std::endl;
     }
 
+    std::cout << "[#INFO] Loop start." << ros::ok( ) << std::endl;
+
     int imageCnt = 0;
     while ( ros::ok( ) )
     {
-        cvImage cv_image = camReader.grabImage( );
+        ptgrey_reader::cvImage cv_image = camReader.grabImage( );
         if ( cv_image.image.empty( ) )
         {
             std::cout << "[#INFO] Grabbed no image." << std::endl;

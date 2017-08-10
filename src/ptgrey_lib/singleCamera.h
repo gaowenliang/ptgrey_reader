@@ -4,8 +4,11 @@
 #include <iostream>
 #include <vector>
 
+#include "ptgrey_type.h"
 #include <flycapture/FlyCapture2.h>
-#include <opencv2/core.hpp>
+
+namespace ptgrey_reader
+{
 
 class singleCamera
 {
@@ -31,12 +34,13 @@ class singleCamera
     float getGain( FlyCapture2::Error& error );
     float getTriggerMode( FlyCapture2::Error& error );
     float getTriggerDelay( FlyCapture2::Error& error );
+    float getCameraTemperature( FlyCapture2::Error& error );
 
     bool setMetadata( FlyCapture2::Error& error );
     bool setFrameRate( FlyCapture2::Error& error, float rate );
     bool setBrightness( FlyCapture2::Error& error, float brightness );
     bool setAutoExposure( FlyCapture2::Error& error, float exposure );
-    bool setGain( FlyCapture2::Error& error, float exposure );
+    bool setGain( FlyCapture2::Error& error, float gain );
     bool setGamma( FlyCapture2::Error& error, float gamma ); // useless
     bool setShutter( FlyCapture2::Error& error, float shutter );
     bool setShutterAuto( FlyCapture2::Error& error );
@@ -50,6 +54,7 @@ class singleCamera
     void printCameraInfo( );
     bool getCameraConfiguration( FlyCapture2::Error& error );
     bool setCameraConfiguration( FlyCapture2::Error& error );
+    bool setCameraConfiguration( FlyCapture2::Error& error, FlyCapture2::FC2Config& cfg );
     bool startCapture( FlyCapture2::Error& error );
     bool captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCapture2::TimeStamp& time );
     bool StopCapture( FlyCapture2::Error& error );
@@ -68,5 +73,5 @@ class singleCamera
     FlyCapture2::FC2Config cameraConfig;
     FlyCapture2::CameraInfo cameraInfo;
 };
-
+}
 #endif // CAMERAREADER_H
