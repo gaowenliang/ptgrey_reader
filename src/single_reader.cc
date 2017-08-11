@@ -25,6 +25,7 @@ main( int argc, char** argv )
     bool is_print        = true;
     int serialNum        = 17221121;
     bool is_auto_shutter = false;
+    bool is_sync         = true;
     double brightness    = 0.1;
     double exposure      = 0.1;
     double gain          = 1.0;
@@ -36,6 +37,7 @@ main( int argc, char** argv )
     nh.getParam( "is_print", is_print );
     nh.getParam( "serialNum", serialNum );
     nh.getParam( "is_auto_shutter", is_auto_shutter );
+    nh.getParam( "is_sync", is_sync );
     nh.getParam( "brightness", brightness );
     nh.getParam( "exposure", exposure );
     nh.getParam( "gain", gain );
@@ -51,8 +53,9 @@ main( int argc, char** argv )
     if ( is_show )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
 
-    bool is_cameraStarted = camReader.startCamera( cameraId, frameRate, brightness, exposure,
-                                                   gain, is_auto_shutter, shutter, is_print );
+    bool is_cameraStarted
+    = camReader.startCamera( cameraId, frameRate, brightness, exposure, gain,
+                             is_auto_shutter, shutter, is_print, is_sync );
     if ( !is_cameraStarted )
     {
         ros::shutdown( );

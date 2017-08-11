@@ -21,7 +21,8 @@ class singleCameraReader
                             double exposure,
                             double gain,
                             bool is_auto_shutter,
-                            double shutter );
+                            double shutter,
+                            bool is_sync );
     void printCameraProperty( );
 
     bool startCamera( unsigned int serialNum,
@@ -31,7 +32,8 @@ class singleCameraReader
                       double gain,
                       bool is_auto_shutter,
                       double shutter,
-                      bool is_print_info = false );
+                      bool is_print_info = false,
+                      bool is_sync       = false );
     cvImage grabImage( );
     void stopCamera( );
 

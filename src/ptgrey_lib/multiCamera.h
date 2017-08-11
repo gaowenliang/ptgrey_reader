@@ -28,7 +28,7 @@ class multiCamera
             thePppCameras[cameraIndex] = psingleCam->getPCamera( );
         }
         ppCameras = thePppCameras;
-        std::cout << "cameras size " << pcameras.size( ) << std::endl;
+        //        std::cout << "cameras size " << pcameras.size( ) << std::endl;
     }
     ~multiCamera( ) {}
 

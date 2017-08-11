@@ -22,35 +22,46 @@ main( int argc, char** argv )
     ros::NodeHandle nh( "~" );
 
     bool is_pub          = true;
-    bool is_show         = true;
+    bool is_show         = false;
     bool is_print        = true;
-    int serialNum        = 17221121;
     bool is_auto_shutter = false;
+    bool is_sync         = false;
     double brightness    = 0.1;
     double exposure      = 0.1;
     double gain          = 1.0;
     double frameRate     = 30.0;
     double shutter       = 5.0;
+    int cam_cnt          = 1;
 
     nh.getParam( "is_pub", is_pub );
     nh.getParam( "is_show", is_show );
     nh.getParam( "is_print", is_print );
-    nh.getParam( "serialNum", serialNum );
     nh.getParam( "is_auto_shutter", is_auto_shutter );
+    nh.getParam( "is_sync", is_sync );
     nh.getParam( "brightness", brightness );
     nh.getParam( "exposure", exposure );
     nh.getParam( "gain", gain );
     nh.getParam( "frameRate", frameRate );
     nh.getParam( "shutter", shutter );
+    nh.getParam( "cam_cnt", cam_cnt );
 
-    ros::Publisher imagePublisher = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
-    ros::Publisher imagePublisher2 = nh.advertise< sensor_msgs::Image >( "/image_out2", 3 );
-
-    unsigned int cameraId  = 17221121;
-    unsigned int cameraId2 = 17221110;
     std::vector< unsigned int > IDs;
-    IDs.push_back( cameraId );
-    IDs.push_back( cameraId2 );
+    std::vector< ros::Publisher > Publishers;
+    for ( int i = 0; i < cam_cnt; i++ )
+    {
+        std::string prefix = boost::str( boost::format( "camera%d/" ) % i );
+        int serialNum      = 17221121;
+        std::string topic;
+
+        nh.getParam( prefix + "serialNum", serialNum );
+        nh.getParam( prefix + "topic", topic );
+
+        unsigned int cameraId = serialNum;
+        IDs.push_back( cameraId );
+
+        ros::Publisher imagePublisher = nh.advertise< sensor_msgs::Image >( topic, 3 );
+        Publishers.push_back( imagePublisher );
+    }
 
     ptgrey_reader::multiCameraReader camReader( IDs );
 
@@ -60,7 +71,7 @@ main( int argc, char** argv )
         cv::namedWindow( "image2", CV_WINDOW_NORMAL );
     }
     bool is_cameraStarted = camReader.startCamera( IDs, frameRate, brightness, exposure, gain,
-                                                   is_auto_shutter, shutter, is_print );
+                                                   is_auto_shutter, shutter, is_print, is_sync );
 
     if ( !is_cameraStarted )
     {
@@ -74,7 +85,7 @@ main( int argc, char** argv )
     while ( ros::ok( ) )
     {
         std::vector< ptgrey_reader::cvImage > images_tmp;
-        images_tmp.resize( 2 );
+        images_tmp.resize( cam_cnt );
         camReader.grabImage( images_tmp );
         if ( images_tmp.at( 0 ).image.empty( ) )
         {
@@ -98,10 +109,11 @@ main( int argc, char** argv )
                 else
                     outImg.encoding = sensor_msgs::image_encodings::MONO8;
 
-                outImg.image = images_tmp.at( 0 ).image;
-                imagePublisher.publish( outImg );
-                outImg.image = images_tmp.at( 1 ).image;
-                imagePublisher2.publish( outImg );
+                for ( int pub_index = 0; pub_index < cam_cnt; ++pub_index )
+                {
+                    outImg.image = images_tmp.at( pub_index ).image;
+                    Publishers.at( pub_index ).publish( outImg );
+                }
             }
 
             if ( is_show )

@@ -250,6 +250,10 @@ singleCamera::getTriggerMode( FlyCapture2::Error& error )
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::TRIGGER_MODE;
     error      = pCamera->GetProperty( &fProp );
+
+    if ( fProp.present == true )
+        std::cout << " Trigger present: " << fProp.present
+                  << ". Camera support external triggering." << std::endl;
     std::cout << " TriggerMode " << fProp.absValue << std::endl;
     std::cout << " TriggerMode onOff " << fProp.onOff << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -697,6 +701,53 @@ singleCamera::setShutterAuto( FlyCapture2::Error& error )
     }
     else
         return true;
+}
+
+bool
+singleCamera::setTrigger( FlyCapture2::Error& error )
+{
+    FlyCapture2::TriggerMode triggerMode;
+    error = pCamera->GetTriggerMode( &triggerMode );
+
+    triggerMode.mode     = 0; // 0 means stand trigger
+    triggerMode.onOff    = true;
+    triggerMode.polarity = true;
+
+    error = pCamera->SetTriggerMode( &triggerMode );
+
+    error = pCamera->GetTriggerMode( &triggerMode );
+    if ( triggerMode.onOff == true )
+    {
+        std::cout << "[#INFO] Trigger setted." << std::endl;
+        return true;
+    }
+    else
+        return false;
+}
+
+bool
+singleCamera::setTriggerOFF( FlyCapture2::Error& error )
+{
+    FlyCapture2::TriggerMode triggerMode;
+    error = pCamera->GetTriggerMode( &triggerMode );
+
+    triggerMode.mode     = 0; // 0 means stand trigger
+    triggerMode.onOff    = false;
+    triggerMode.polarity = true;
+
+    error = pCamera->SetTriggerMode( &triggerMode );
+
+    error = pCamera->GetTriggerMode( &triggerMode );
+    if ( triggerMode.onOff == true )
+    {
+        std::cout << "[#INFO] Trigger setted." << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cout << "[#INFO] Trigger OFF." << std::endl;
+        return false;
+    }
 }
 
 bool

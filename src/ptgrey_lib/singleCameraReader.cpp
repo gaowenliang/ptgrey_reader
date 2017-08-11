@@ -20,8 +20,13 @@ singleCameraReader::getConnectCameraNum( )
 }
 
 void
-singleCameraReader::setCameraProperty(
-double frameRate, double brightness, double exposure, double gain, bool is_auto_shutter, double shutter )
+singleCameraReader::setCameraProperty( double frameRate,
+                                       double brightness,
+                                       double exposure,
+                                       double gain,
+                                       bool is_auto_shutter,
+                                       double shutter,
+                                       bool is_sync )
 {
     Camera( ).setBrightness( error, brightness );
     Camera( ).setAutoExposure( error, exposure );
@@ -31,6 +36,11 @@ double frameRate, double brightness, double exposure, double gain, bool is_auto_
         Camera( ).setShutterAuto( error );
     else
         Camera( ).setShutter( error, shutter );
+
+    if ( is_sync )
+        Camera( ).setTrigger( error );
+    else
+        Camera( ).setTriggerOFF( error );
 }
 
 void
@@ -60,7 +70,8 @@ singleCameraReader::startCamera( unsigned int serialNum,
                                  double gain,
                                  bool is_auto_shutter,
                                  double shutter,
-                                 bool is_print_info )
+                                 bool is_print_info,
+                                 bool is_sync )
 {
     getConnectCameraNum( );
 
@@ -92,7 +103,7 @@ singleCameraReader::startCamera( unsigned int serialNum,
         Camera( ).setCameraConfiguration( error );
         Camera( ).setMetadata( error );
 
-        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
+        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter, is_sync );
         if ( is_print_info )
             printCameraProperty( );
 

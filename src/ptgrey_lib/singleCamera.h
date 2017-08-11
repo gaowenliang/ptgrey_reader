@@ -44,6 +44,8 @@ class singleCamera
     bool setGamma( FlyCapture2::Error& error, float gamma ); // useless
     bool setShutter( FlyCapture2::Error& error, float shutter );
     bool setShutterAuto( FlyCapture2::Error& error );
+    bool setTrigger( FlyCapture2::Error& error );
+    bool setTriggerOFF( FlyCapture2::Error& error );
 
     bool isColorCamera( );
 

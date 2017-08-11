@@ -23,7 +23,8 @@ ptgrey_reader::multiCameraReader::setCameraProperty( const double frameRate,
                                                      const double exposure,
                                                      const double gain,
                                                      const bool is_auto_shutter,
-                                                     const double shutter )
+                                                     const double shutter,
+                                                     const bool is_sync )
 {
     for ( int camera_index = 0; camera_index < int( cameraNumber ); ++camera_index )
     {
@@ -35,6 +36,11 @@ ptgrey_reader::multiCameraReader::setCameraProperty( const double frameRate,
             Cameras( )->getCameras( ).at( camera_index )->setShutterAuto( error );
         else
             Cameras( )->getCameras( ).at( camera_index )->setShutter( error, shutter );
+
+        if ( is_sync )
+            Cameras( )->getCameras( ).at( camera_index )->setTrigger( error );
+        else
+            Cameras( )->getCameras( ).at( camera_index )->setTriggerOFF( error );
     }
 }
 
@@ -92,7 +98,6 @@ ptgrey_reader::multiCameraReader::startCamera( const std::vector< unsigned int >
         Cameras( )->getCameraInfo( error );
         //        if ( is_print_info )
         Cameras( )->printCameraInfo( );
-        std::cout << "[#INFO] Cameras printCameraInfo." << std::endl;
 
         Cameras( )->getCameraConfiguration( error );
 
@@ -104,7 +109,8 @@ ptgrey_reader::multiCameraReader::startCamera( const std::vector< unsigned int >
         Cameras( )->setCameraConfiguration( error, cameraConfig );
         Cameras( )->setMetadata( error );
 
-        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter );
+        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter,
+                           shutter, is_synchronized );
         if ( is_print_info )
             printCameraProperty( );
 

@@ -26,7 +26,8 @@ class multiCameraReader
                             const double exposure,
                             const double gain,
                             const bool is_auto_shutter,
-                            const double shutter );
+                            const double shutter,
+                            const bool is_sync );
 
     void printCameraProperty( );
     bool startCamera( const std::vector< unsigned int > serialNum,
