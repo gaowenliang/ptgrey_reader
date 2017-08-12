@@ -136,7 +136,7 @@ ptgrey_reader::multiCameraReader::grabImage( std::vector< ptgrey_reader::cvImage
         cv_images.at( camera_index ).time  = imageWithStamp.at( camera_index ).second;
     }
 
-    return false;
+    return true;
 }
 
 void
