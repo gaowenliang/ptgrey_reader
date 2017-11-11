@@ -81,6 +81,8 @@ main( int argc, char** argv )
 
     std::cout << "[#INFO] Loop start." << ros::ok( ) << std::endl;
 
+    ros::Rate loop( frameRate );
+
     int imageCnt = 0;
     while ( ros::ok( ) )
     {
@@ -123,6 +125,7 @@ main( int argc, char** argv )
                 cv::waitKey( 10 );
             }
         }
+        loop.sleep( );
     }
 
     camReader.stopCamera( );
