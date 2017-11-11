@@ -1,7 +1,6 @@
 <launch>
 
      <node name="stereo" pkg="ptgrey_reader" type="multi_reader" output="screen">
-
         <param name="is_pub" type="bool" value="true"/>
         <param name="is_show" type="bool" value="false"/>
         <param name="is_print" type="bool" value="true"/>
