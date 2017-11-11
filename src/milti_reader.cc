@@ -70,8 +70,8 @@ main( int argc, char** argv )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
         cv::namedWindow( "image2", CV_WINDOW_NORMAL );
     }
-    bool is_cameraStarted = camReader.startCamera( IDs, frameRate, brightness, exposure, gain,
-                                                   is_auto_shutter, shutter, is_print, is_sync );
+    bool is_cameraStarted
+    = camReader.startCamera( IDs, frameRate, brightness, exposure, gain, is_auto_shutter, shutter, is_print, is_sync );
 
     if ( !is_cameraStarted )
     {
