@@ -74,7 +74,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES pointgrey
   CATKIN_DEPENDS roscpp sensor_msgs std_msgs
-  DEPENDS system_lib
+  #DEPENDS system_lib
 )
 
 ###########

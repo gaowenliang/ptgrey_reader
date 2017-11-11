@@ -9,7 +9,7 @@
 #include <flycapture/FlyCapture2.h>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include <ros/ros.h>
+//#include <ros/ros.h>
 #include <sstream>
 
 using namespace FlyCapture2;
@@ -117,8 +117,8 @@ RunSingleCamera( PGRGuid guid )
 int
 main( int argc, char** argv )
 {
-    ros::init( argc, argv, "pointGreyReader" );
-    ros::NodeHandle nh( "~" );
+    //ros::init( argc, argv, "pointGreyReader" );
+    //ros::NodeHandle nh( "~" );
 
     PrintBuildInfo( );
 
