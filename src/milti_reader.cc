@@ -70,8 +70,8 @@ main( int argc, char** argv )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
         cv::namedWindow( "image2", CV_WINDOW_NORMAL );
     }
-    bool is_cameraStarted = camReader.startCamera( IDs, frameRate, brightness, exposure, gain,
-                                                   is_auto_shutter, shutter, is_print, is_sync );
+    bool is_cameraStarted
+    = camReader.startCamera( IDs, frameRate, brightness, exposure, gain, is_auto_shutter, shutter, is_print, is_sync );
 
     if ( !is_cameraStarted )
     {
@@ -80,6 +80,8 @@ main( int argc, char** argv )
     }
 
     std::cout << "[#INFO] Loop start." << ros::ok( ) << std::endl;
+
+    ros::Rate loop( frameRate );
 
     int imageCnt = 0;
     while ( ros::ok( ) )
@@ -123,6 +125,7 @@ main( int argc, char** argv )
                 cv::waitKey( 10 );
             }
         }
+        loop.sleep( );
     }
 
     camReader.stopCamera( );

@@ -7,7 +7,7 @@
         <rosparam>
             # common setting and default individual settings
             cam_cnt: 2
-            frameRate:  40
+            frameRate:  15
             gain: 1.0
             is_auto_shutter: false
             is_sync: false
