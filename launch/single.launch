@@ -17,6 +17,9 @@
         <param name="brightness" type="double" value="0.1"/>
         <param name="exposure" type="double" value="0.8"/>
         <param name="gain" type="double" value="5.0"/>
+        <rosparam>
+            is_roi: true
+        </rosparam>
     </node>
 
 

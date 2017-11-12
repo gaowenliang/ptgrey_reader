@@ -6,6 +6,7 @@ backward::SignalHandling sh;
 }
 
 //#include <code_utils/sys_utils.h>
+#include "preprocess/process.h"
 #include "ptgrey_lib/singleCameraReader.h"
 #include <cv_bridge/cv_bridge.h>
 #include <flycapture/FlyCapture2.h>
@@ -20,17 +21,19 @@ main( int argc, char** argv )
     ros::init( argc, argv, "singleReader" );
     ros::NodeHandle nh( "~" );
 
-    bool is_pub          = true;
-    bool is_show         = false;
-    bool is_print        = true;
-    int serialNum        = 17221121;
-    bool is_auto_shutter = false;
-    bool is_sync         = true;
-    double brightness    = 0.1;
-    double exposure      = 0.1;
-    double gain          = 1.0;
-    double frameRate     = 20.0;
-    double shutter       = 5.0;
+    bool is_pub              = true;
+    bool is_show             = false;
+    bool is_print            = true;
+    int serialNum            = 17221121;
+    bool is_auto_shutter     = false;
+    bool is_sync             = true;
+    bool is_roi              = true;
+    double brightness        = 0.1;
+    double exposure          = 0.1;
+    double gain              = 1.0;
+    double frameRate         = 20.0;
+    double shutter           = 5.0;
+    double down_sample_scale = 0.75;
 
     nh.getParam( "is_pub", is_pub );
     nh.getParam( "is_show", is_show );
@@ -38,13 +41,18 @@ main( int argc, char** argv )
     nh.getParam( "serialNum", serialNum );
     nh.getParam( "is_auto_shutter", is_auto_shutter );
     nh.getParam( "is_sync", is_sync );
+    nh.getParam( "is_roi", is_roi );
     nh.getParam( "brightness", brightness );
     nh.getParam( "exposure", exposure );
     nh.getParam( "gain", gain );
     nh.getParam( "frameRate", frameRate );
     nh.getParam( "shutter", shutter );
 
-    ros::Publisher imagePublisher = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
+    preprocess::PreProcess* pre;
+    pre = new preprocess::PreProcess( cv::Size( 1280, 1024 ), cv::Size( 600, 600 ), cv::Point( 1280 / 2, 1024 / 2 ), down_sample_scale );
+
+    ros::Publisher imagePublisher    = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
+    ros::Publisher imageROIPublisher = nh.advertise< sensor_msgs::Image >( "/image_out_roi", 3 );
 
     unsigned int cameraId = serialNum;
 
@@ -93,6 +101,12 @@ main( int argc, char** argv )
 
                 outImg.image = cv_image.image;
                 imagePublisher.publish( outImg );
+
+                if ( is_roi )
+                {
+                    outImg.image = pre->do_preprocess( cv_image.image );
+                    imageROIPublisher.publish( outImg );
+                }
             }
 
             if ( is_show )
