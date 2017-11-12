@@ -125,8 +125,7 @@ singleCamera::getWhiteBalance( FlyCapture2::Error& error )
     FlyCapture2::Property fProp;
     fProp.type = FlyCapture2::WHITE_BALANCE;
     error      = pCamera->GetProperty( &fProp );
-    std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA
-              << " B:" << fProp.valueB << std::endl;
+    std::cout << " WhiteBalance " << fProp.absValue << " A:" << fProp.valueA << " B:" << fProp.valueB << std::endl;
 
     //    std::cout << " autoManualMode " << fProp.autoManualMode << std::endl;
     //    std::cout << " onOff " << fProp.onOff << std::endl;
@@ -252,8 +251,7 @@ singleCamera::getTriggerMode( FlyCapture2::Error& error )
     error      = pCamera->GetProperty( &fProp );
 
     if ( fProp.present == true )
-        std::cout << " Trigger present: " << fProp.present
-                  << ". Camera support external triggering." << std::endl;
+        std::cout << " Trigger present: " << fProp.present << ". Camera support external triggering." << std::endl;
     std::cout << " TriggerMode " << fProp.absValue << std::endl;
     std::cout << " TriggerMode onOff " << fProp.onOff << std::endl;
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -445,20 +443,20 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     time = rawImage.GetTimeStamp( );
     //    std::cout << "time " << time.seconds << " " << time.microSeconds << std::endl;
 
-    // Create a converted image
-    FlyCapture2::Image convertedImage;
+    //    // Create a converted image
+    //    FlyCapture2::Image convertedImage;
 
-    // Convert the raw image
-    error = rawImage.Convert( FlyCapture2::PIXEL_FORMAT_MONO8, &convertedImage );
-    if ( error != FlyCapture2::PGRERROR_OK )
-    {
-        std::cout << "[#INFO]Error in Convert " << std::endl;
-        error.PrintErrorTrace( );
-        return false;
-    }
+    //    // Convert the raw image
+    //    error = rawImage.Convert( FlyCapture2::PIXEL_FORMAT_MONO8, &convertedImage );
+    //    if ( error != FlyCapture2::PGRERROR_OK )
+    //    {
+    //        std::cout << "[#INFO]Error in Convert " << std::endl;
+    //        error.PrintErrorTrace( );
+    //        return false;
+    //    }
 
     // Change to opencv image Mat
-    unsigned char* pdata = convertedImage.GetData( );
+    unsigned char* pdata = rawImage.GetData( );
 
     cv::Mat cv_image;
     if ( cameraInfo.isColorCamera )

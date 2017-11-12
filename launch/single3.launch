@@ -1,0 +1,57 @@
+<launch>
+
+    <arg name="up_device" default = "17221110"/>
+    <arg name="down_device" default = "17221121"/>
+    <arg name="rate" default="15"/>
+    <arg name="sync" default="true"/>
+    <arg name="gain" default="1.0"/>
+    <arg name="auto_shutter" default="false"/>
+    <arg name="shutter_t" default="5.0"/>
+    <arg name="brightness" default="0.1"/>
+    <arg name="exposure" default="0.1"/>
+
+    <node name="down" pkg="ptgrey_reader" type="single_reader"
+         ns="/stereo" output="screen">
+        <remap from="/image_out" to="down/image_raw" />
+        <remap from="/image_out_roi" to="down/image" />
+        <param name="serialNum" type="int" value="$(arg down_device)"/>
+        <param name="is_pub" type="bool" value="true"/>
+        <param name="is_show" type="bool" value="false"/>
+        <param name="is_print" type="bool" value="true"/>
+        <param name="frameRate" type="double" value="$(arg rate)"/>
+        <param name="is_auto_shutter" type="bool" value="$(arg auto_shutter)"/>
+        <param name="is_sync" type="bool" value="$(arg sync)"/>
+        <param name="shutter" type="double" value="$(arg shutter_t)"/>
+        <param name="brightness" type="double" value="$(arg brightness)"/>
+        <param name="exposure" type="double" value="$(arg exposure)"/>
+        <param name="gain" type="double" value="$(arg gain)"/>
+    </node>
+    <node name="up" pkg="ptgrey_reader" type="single_reader"
+         ns="/stereo" output="screen">
+        <remap from="/image_out" to="up/image_raw" />
+        <remap from="/image_out_roi" to="up/image" />
+        <param name="serialNum" type="int" value="$(arg up_device)"/>
+        <param name="is_pub" type="bool" value="true"/>
+        <param name="is_show" type="bool" value="false"/>
+        <param name="is_print" type="bool" value="true"/>
+        <param name="frameRate" type="double" value="$(arg rate)"/>
+        <param name="is_auto_shutter" type="bool" value="$(arg auto_shutter)"/>
+        <param name="is_sync" type="bool" value="$(arg sync)"/>
+        <param name="shutter" type="double" value="$(arg shutter_t)"/>
+        <param name="brightness" type="double" value="$(arg brightness)"/>
+        <param name="exposure" type="double" value="$(arg exposure)"/>
+        <param name="gain" type="double" value="$(arg gain)"/>
+        <rosparam>
+            is_roi:    true
+            size_x:    1280
+            size_y:    1024
+            center_x:  640
+            center_y:  512
+            cropper_x: 600
+            cropper_y: 600
+            down_sample_scale: 0.75
+        </rosparam>
+    </node>
+
+
+</launch>

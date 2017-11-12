@@ -21,8 +21,7 @@ class multiCamera
         for ( int cameraIndex = 0; cameraIndex < int( cameraNum ); ++cameraIndex )
         {
             singleCamera* psingleCam = new singleCamera( serialNum.at( cameraIndex ) );
-            std::cout << "[#INFO] CameraIndex " << cameraIndex << " serialNum "
-                      << serialNum[cameraIndex] << std::endl;
+            std::cout << "[#INFO] CameraIndex " << cameraIndex << " serialNum " << serialNum[cameraIndex] << std::endl;
 
             pcameras.push_back( psingleCam );
             thePppCameras[cameraIndex] = psingleCam->getPCamera( );
@@ -55,8 +54,7 @@ class multiCamera
     bool setCameraConfiguration( FlyCapture2::Error& error );
     bool setCameraConfiguration( FlyCapture2::Error& error, FlyCapture2::FC2Config cfg );
     bool startCapture( FlyCapture2::Error& error );
-    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > >
-    captureImage( FlyCapture2::Error& error );
+    void captureImage( FlyCapture2::Error& error, std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > >& images );
     bool StopCapture( FlyCapture2::Error& error );
     bool disconnectCamera( FlyCapture2::Error& error );
 
