@@ -10,7 +10,7 @@
             frameRate:  15
             gain: 1.0
             is_auto_shutter: false
-            is_sync: false
+            is_sync: true
             shutter: 5.0
             brightness: 0.1
             exposure: 0.4
@@ -19,13 +19,28 @@
             # individual setting for camera 0
             camera0:
                 serialNum: 17221121
-                topic: down/image_raw
+                topic:     down/image_raw
+                topic_roi: down/image
+                is_roi:    false
+                size_x:    1280
+                size_y:    1024
+                center_x:  640
+                center_y:  512
+                cropper_x: 600
+                cropper_y: 600
+                down_sample_scale: 0.75
             camera1:
                 serialNum: 17221110
-                topic: up/image_raw
+                topic:     up/image_raw
+                topic_roi: up/image
+                is_roi:    true
+                size_x:    1280
+                size_y:    1024
+                center_x:  640
+                center_y:  512
+                cropper_x: 600
+                cropper_y: 600
+                down_sample_scale: 0.75
         </rosparam>
     </node>
-
-
-
 </launch>
