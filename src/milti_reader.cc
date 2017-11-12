@@ -1,5 +1,5 @@
 #define BACKWARD_HAS_DW 1
-#include <backward.hpp>
+#include "backward.hpp"
 namespace backward
 {
 backward::SignalHandling sh;
@@ -108,7 +108,7 @@ main( int argc, char** argv )
 
     std::cout << "[#INFO] Loop start." << ros::ok( ) << std::endl;
 
-    ros::Rate loop( frameRate );
+    // ros::Rate loop( frameRate );
 
     int imageCnt = 0;
     while ( ros::ok( ) )
@@ -132,7 +132,23 @@ main( int argc, char** argv )
                 cv_bridge::CvImage outImg;
                 outImg.header.stamp.sec  = images_tmp.at( 0 ).time.seconds;
                 outImg.header.stamp.nsec = images_tmp.at( 0 ).time.microSeconds * 1000;
-                outImg.header.frame_id   = "frame";
+
+                ros::Time t1 = ros::Time::now( );
+                ros::Time t2;
+                ros::Time t3;
+                t2.sec  = images_tmp.at( 0 ).time.seconds;
+                t2.nsec = images_tmp.at( 0 ).time.microSeconds * 1000;
+                t3.sec  = images_tmp.at( 1 ).time.seconds;
+                t3.nsec = images_tmp.at( 1 ).time.microSeconds * 1000;
+
+                ros::Duration dt1 = t1 - t2;
+                ros::Duration dt2 = t1 - t3;
+                ros::Duration dt3 = t3 - t2;
+                std::cout << "dt1 " << dt1.toSec( ) << std::endl;
+                std::cout << "dt2 " << dt2.toSec( ) << std::endl;
+                std::cout << "dt3 " << dt3.toSec( ) << std::endl;
+
+                outImg.header.frame_id = "frame";
                 if ( camReader.Cameras( )->isColorCamera( ) )
                     outImg.encoding = sensor_msgs::image_encodings::BGR8;
                 else
@@ -158,7 +174,7 @@ main( int argc, char** argv )
                 cv::waitKey( 10 );
             }
         }
-        loop.sleep( );
+        // loop.sleep( );
     }
 
     camReader.stopCamera( );

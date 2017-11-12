@@ -10,8 +10,8 @@ multiCamera::initMultiCamera( FlyCapture2::Error& error, FlyCapture2::BusManager
     {
         if ( !pcameras.at( camera_index )->initCamera( error, BusMana ) )
         {
-            std::cout << "[#INFO]Error in initMultiCamera in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in initMultiCamera in camera " << pcameras[camera_index]->getSerialNumber( )
+                      << "." << std::endl;
             is_allCameraOk = is_allCameraOk & false;
             continue;
         }
@@ -33,8 +33,7 @@ ptgrey_reader::multiCamera::setMetadata( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->setMetadata( error ) )
         {
-            std::cout << "[#INFO]Error in setMetadata in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setMetadata in camera " << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -56,8 +55,8 @@ multiCamera::setFrameRate( FlyCapture2::Error& error, float rate )
     {
         if ( !pcameras[camera_index]->setFrameRate( error, rate ) )
         {
-            std::cout << "[#INFO]Error in setFrameRate in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setFrameRate in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -79,8 +78,8 @@ multiCamera::setBrightness( FlyCapture2::Error& error, float brightness )
     {
         if ( !pcameras[camera_index]->setBrightness( error, brightness ) )
         {
-            std::cout << "[#INFO]Error in setBrightness in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setBrightness in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -102,8 +101,8 @@ multiCamera::setAutoExposure( FlyCapture2::Error& error, float exposure )
     {
         if ( !pcameras[camera_index]->setAutoExposure( error, exposure ) )
         {
-            std::cout << "[#INFO]Error in setAutoExposure in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setAutoExposure in camera " << pcameras[camera_index]->getSerialNumber( )
+                      << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -125,8 +124,7 @@ multiCamera::setGain( FlyCapture2::Error& error, float gain )
     {
         if ( !pcameras[camera_index]->setGain( error, gain ) )
         {
-            std::cout << "[#INFO]Error in setGain in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setGain in camera " << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -148,8 +146,7 @@ multiCamera::setGamma( FlyCapture2::Error& error, float gamma )
     {
         if ( !pcameras[camera_index]->setGamma( error, gamma ) )
         {
-            std::cout << "[#INFO]Error in setGamma in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setGamma in camera " << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -171,8 +168,7 @@ multiCamera::setShutter( FlyCapture2::Error& error, float shutter )
     {
         if ( !pcameras[camera_index]->setShutter( error, shutter ) )
         {
-            std::cout << "[#INFO]Error in setShutter in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setShutter in camera " << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -194,8 +190,8 @@ multiCamera::setShutterAuto( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->setShutterAuto( error ) )
         {
-            std::cout << "[#INFO]Error in setShutterAuto in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in setShutterAuto in camera " << pcameras[camera_index]->getSerialNumber( )
+                      << "." << std::endl;
             is_allSetRight = false;
             continue;
         }
@@ -229,8 +225,8 @@ multiCamera::connectCamera( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->connectCamera( error ) )
         {
-            std::cout << "[#INFO]Error in connectCamera in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in connectCamera in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraConnect = is_allCameraConnect & false;
             continue;
         }
@@ -252,8 +248,8 @@ multiCamera::getCameraInfo( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->getCameraInfo( error ) )
         {
-            std::cout << "[#INFO]Error in connectCamera in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in connectCamera in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraOk = is_allCameraOk & false;
             continue;
         }
@@ -367,8 +363,8 @@ multiCamera::startCapture( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->startCapture( error ) )
         {
-            std::cout << "[#INFO]Error in startCapture in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in startCapture in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraOk = is_allCameraOk & false;
             continue;
         }
@@ -382,11 +378,12 @@ multiCamera::startCapture( FlyCapture2::Error& error )
     return is_allCameraOk;
 }
 
-std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > >
-multiCamera::captureImage( FlyCapture2::Error& error )
+void
+multiCamera::captureImage( FlyCapture2::Error& error, std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > >& images )
 {
     bool is_allCameraOk = true;
-    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > > images_tmp;
+    //    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > > images_tmp;
+    // std::cout << " once " << std::endl;
     for ( int camera_index = 0; camera_index < int( cameraNum ); ++camera_index )
     {
         cv::Mat image_tmp;
@@ -394,8 +391,8 @@ multiCamera::captureImage( FlyCapture2::Error& error )
         std::pair< cv::Mat, FlyCapture2::TimeStamp > imageWithTime;
         if ( !getCameras( ).at( camera_index )->captureOneImage( error, image_tmp, time_tmp ) )
         {
-            std::cout << "[#INFO]Error in captureImage in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in captureImage in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraOk = is_allCameraOk & false;
             continue;
         }
@@ -403,14 +400,17 @@ multiCamera::captureImage( FlyCapture2::Error& error )
         {
             imageWithTime.first  = image_tmp;
             imageWithTime.second = time_tmp;
-            images_tmp.push_back( imageWithTime );
+            // std::cout << camera_index << " " << double( time_tmp.seconds ) << " "
+            //          << double( time_tmp.microSeconds * 0.000001 ) << std::endl;
+
+            images.at( camera_index ) = imageWithTime;
 
             is_allCameraOk = is_allCameraOk & true;
             continue;
         }
     }
 
-    return images_tmp;
+    //    return images_tmp;
 }
 
 bool
@@ -421,8 +421,8 @@ multiCamera::StopCapture( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->StopCapture( error ) )
         {
-            std::cout << "[#INFO]Error in startCapture in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in startCapture in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraStoped = is_allCameraStoped & false;
             continue;
         }
@@ -444,8 +444,8 @@ multiCamera::disconnectCamera( FlyCapture2::Error& error )
     {
         if ( !pcameras[camera_index]->disconnectCamera( error ) )
         {
-            std::cout << "[#INFO]Error in startCapture in camera "
-                      << pcameras[camera_index]->getSerialNumber( ) << "." << std::endl;
+            std::cout << "[#INFO]Error in startCapture in camera " << pcameras[camera_index]->getSerialNumber( ) << "."
+                      << std::endl;
             is_allCameraStoped = is_allCameraStoped & false;
             continue;
         }

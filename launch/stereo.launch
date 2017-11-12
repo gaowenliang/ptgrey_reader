@@ -18,6 +18,18 @@
 
             # individual setting for camera 0
             camera0:
+                serialNum: 17221110
+                topic:     up/image_raw
+                topic_roi: up/image
+                is_roi:    false
+                size_x:    1280
+                size_y:    1024
+                center_x:  640
+                center_y:  512
+                cropper_x: 600
+                cropper_y: 600
+                down_sample_scale: 0.75
+            camera1:
                 serialNum: 17221121
                 topic:     down/image_raw
                 topic_roi: down/image
@@ -29,18 +41,7 @@
                 cropper_x: 600
                 cropper_y: 600
                 down_sample_scale: 0.75
-            camera1:
-                serialNum: 17221110
-                topic:     up/image_raw
-                topic_roi: up/image
-                is_roi:    true
-                size_x:    1280
-                size_y:    1024
-                center_x:  640
-                center_y:  512
-                cropper_x: 600
-                cropper_y: 600
-                down_sample_scale: 0.75
+
         </rosparam>
     </node>
 </launch>

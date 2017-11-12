@@ -49,8 +49,7 @@ ptgrey_reader::multiCameraReader::printCameraProperty( )
 {
     for ( int camera_index = 0; camera_index < int( cameraNumber ); ++camera_index )
     {
-        std::cout << "[#INFO] Property of camera "
-                  << Cameras( )->getCameras( ).at( camera_index )->getSerialNumber( );
+        std::cout << "[#INFO] Property of camera " << Cameras( )->getCameras( ).at( camera_index )->getSerialNumber( );
 
         Cameras( )->getCameras( ).at( camera_index )->getBrightness( error );
         Cameras( )->getCameras( ).at( camera_index )->getFrameRate( error );
@@ -102,15 +101,14 @@ ptgrey_reader::multiCameraReader::startCamera( const std::vector< unsigned int >
         Cameras( )->getCameraConfiguration( error );
 
         FlyCapture2::FC2Config cameraConfig;
-        cameraConfig.numBuffers  = 10; // Set the number of driver buffers used to 10.
-        cameraConfig.grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
+        cameraConfig.numBuffers                    = 10; // Set the number of driver buffers used to 10.
+        cameraConfig.grabTimeout                   = FlyCapture2::TIMEOUT_UNSPECIFIED;
         cameraConfig.highPerformanceRetrieveBuffer = true;
         cameraConfig.grabMode                      = FlyCapture2::DROP_FRAMES;
         Cameras( )->setCameraConfiguration( error, cameraConfig );
         Cameras( )->setMetadata( error );
 
-        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter,
-                           shutter, is_synchronized );
+        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter, is_synchronized );
         if ( is_print_info )
             printCameraProperty( );
 
@@ -126,10 +124,10 @@ ptgrey_reader::multiCameraReader::startCamera( const std::vector< unsigned int >
 bool
 ptgrey_reader::multiCameraReader::grabImage( std::vector< ptgrey_reader::cvImage >& cv_images )
 {
-    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > > imageWithStamp
-    = Cameras( )->captureImage( error );
+    //    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > > imageWithStamp;
+    Cameras( )->captureImage( error, imageWithStamp );
 
-    cv_images.resize( cameraNumber );
+    //    cv_images.resize( cameraNumber );
     for ( int camera_index = 0; camera_index < cameraNum( ); ++camera_index )
     {
         cv_images.at( camera_index ).image = imageWithStamp.at( camera_index ).first;

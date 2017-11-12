@@ -15,6 +15,8 @@ class multiCameraReader
     {
         cameraNumber = int( serialNums.size( ) );
         pcameras     = new multiCamera( serialNums );
+        imageWithStamp.clear( );
+        imageWithStamp.resize( cameraNumber );
     }
     ~multiCameraReader( ) {}
 
@@ -47,6 +49,7 @@ class multiCameraReader
     const int cameraNum( ) const { return cameraNumber; }
 
     private:
+    std::vector< std::pair< cv::Mat, FlyCapture2::TimeStamp > > imageWithStamp;
     unsigned int cameraNumber;
     multiCamera* pcameras;
     FlyCapture2::Error error;
