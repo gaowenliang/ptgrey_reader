@@ -27,13 +27,16 @@ main( int argc, char** argv )
     int serialNum            = 17221121;
     bool is_auto_shutter     = false;
     bool is_sync             = true;
-    bool is_roi              = true;
+    bool is_roi              = false;
     double brightness        = 0.1;
     double exposure          = 0.1;
     double gain              = 1.0;
     double frameRate         = 20.0;
     double shutter           = 5.0;
     double down_sample_scale = 0.75;
+    int size_x = 0, size_y = 0;
+    int center_x = 0, center_y = 0;
+    int cropper_x = 0, cropper_y = 0;
 
     nh.getParam( "is_pub", is_pub );
     nh.getParam( "is_show", is_show );
@@ -47,9 +50,16 @@ main( int argc, char** argv )
     nh.getParam( "gain", gain );
     nh.getParam( "frameRate", frameRate );
     nh.getParam( "shutter", shutter );
+    nh.getParam( "down_sample_scale", down_sample_scale );
+    nh.getParam( "size_x", size_x );
+    nh.getParam( "size_y", size_y );
+    nh.getParam( "center_x", center_x );
+    nh.getParam( "center_y", center_y );
+    nh.getParam( "cropper_x", cropper_x );
+    nh.getParam( "cropper_y", cropper_y );
 
     preprocess::PreProcess* pre;
-    pre = new preprocess::PreProcess( cv::Size( 1280, 1024 ), cv::Size( 600, 600 ), cv::Point( 1280 / 2, 1024 / 2 ), down_sample_scale );
+    pre = new preprocess::PreProcess( cv::Size( size_x, size_y ), cv::Size( cropper_x, cropper_y ), cv::Point( center_x, center_y ), down_sample_scale );
 
     ros::Publisher imagePublisher    = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
     ros::Publisher imageROIPublisher = nh.advertise< sensor_msgs::Image >( "/image_out_roi", 3 );

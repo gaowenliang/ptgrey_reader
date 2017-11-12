@@ -8,6 +8,7 @@ backward::SignalHandling sh;
 //#include <code_utils/sys_utils.h>
 #include "ptgrey_lib/multiCameraReader.h"
 //#include "ptgrey_lib/singleCameraReader.h"
+#include "preprocess/process.h"
 #include <cv_bridge/cv_bridge.h>
 #include <flycapture/FlyCapture2.h>
 #include <iostream>
@@ -47,20 +48,46 @@ main( int argc, char** argv )
 
     std::vector< unsigned int > IDs;
     std::vector< ros::Publisher > Publishers;
+    std::vector< ros::Publisher > imageROIPublishers;
+    std::vector< preprocess::PreProcess* > pres;
+    std::vector< bool > is_rois;
     for ( int i = 0; i < cam_cnt; i++ )
     {
         std::string prefix = boost::str( boost::format( "camera%d/" ) % i );
         int serialNum      = 17221121;
         std::string topic;
+        std::string topic_roi;
+        bool is_roi              = false;
+        double down_sample_scale = 0.75;
+        int size_x = 0, size_y = 0;
+        int center_x = 0, center_y = 0;
+        int cropper_x = 0, cropper_y = 0;
 
         nh.getParam( prefix + "serialNum", serialNum );
         nh.getParam( prefix + "topic", topic );
+        nh.getParam( prefix + "topic_roi", topic_roi );
+        nh.getParam( prefix + "is_roi", is_roi );
+        nh.getParam( prefix + "down_sample_scale", down_sample_scale );
+        nh.getParam( prefix + "size_x", size_x );
+        nh.getParam( prefix + "size_y", size_y );
+        nh.getParam( prefix + "center_x", center_x );
+        nh.getParam( prefix + "center_y", center_y );
+        nh.getParam( prefix + "cropper_x", cropper_x );
+        nh.getParam( prefix + "cropper_y", cropper_y );
 
+        preprocess::PreProcess* pre = new preprocess::PreProcess( cv::Size( size_x, size_y ),
+                                                                  cv::Size( cropper_x, cropper_y ),
+                                                                  cv::Point( center_x, center_y ),
+                                                                  down_sample_scale );
+
+        pres.push_back( pre );
         unsigned int cameraId = serialNum;
         IDs.push_back( cameraId );
-
-        ros::Publisher imagePublisher = nh.advertise< sensor_msgs::Image >( topic, 3 );
+        ros::Publisher imagePublisher    = nh.advertise< sensor_msgs::Image >( topic, 3 );
+        ros::Publisher imageROIPublisher = nh.advertise< sensor_msgs::Image >( topic_roi, 3 );
         Publishers.push_back( imagePublisher );
+        imageROIPublishers.push_back( imageROIPublisher );
+        is_rois.push_back( is_roi );
     }
 
     ptgrey_reader::multiCameraReader camReader( IDs );
@@ -115,6 +142,12 @@ main( int argc, char** argv )
                 {
                     outImg.image = images_tmp.at( pub_index ).image;
                     Publishers.at( pub_index ).publish( outImg );
+
+                    if ( is_rois.at( pub_index ) )
+                    {
+                        outImg.image = pres.at( pub_index )->do_preprocess( images_tmp.at( pub_index ).image );
+                        imageROIPublishers.at( pub_index ).publish( outImg );
+                    }
                 }
             }
 
