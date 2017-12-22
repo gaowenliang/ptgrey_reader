@@ -443,8 +443,8 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     time = rawImage.GetTimeStamp( );
     //    std::cout << "time " << time.seconds << " " << time.microSeconds << std::endl;
 
-    // Create a converted image
-    FlyCapture2::Image convertedImage;
+    //    // Create a converted image
+    //    FlyCapture2::Image convertedImage;
 
     // Convert the raw image
     if ( cameraInfo.isColorCamera )
@@ -460,7 +460,7 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     }
 
     // Change to opencv image Mat
-    unsigned char* pdata = convertedImage.GetData( );
+    unsigned char* pdata = rawImage.GetData( );
 
     cv::Mat cv_image;
     if ( cameraInfo.isColorCamera )
