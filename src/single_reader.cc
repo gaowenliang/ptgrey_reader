@@ -33,6 +33,8 @@ main( int argc, char** argv )
     double gain              = 1.0;
     double frameRate         = 20.0;
     double shutter           = 5.0;
+    int WB_red               = 500;
+    int WB_Blue              = 800;
     double down_sample_scale = 0.75;
     int size_x = 0, size_y = 0;
     int center_x = 0, center_y = 0;
@@ -50,6 +52,8 @@ main( int argc, char** argv )
     nh.getParam( "gain", gain );
     nh.getParam( "frameRate", frameRate );
     nh.getParam( "shutter", shutter );
+    nh.getParam( "WB_red", WB_red );
+    nh.getParam( "WB_Blue", WB_Blue );
     nh.getParam( "down_sample_scale", down_sample_scale );
     nh.getParam( "size_x", size_x );
     nh.getParam( "size_y", size_y );
@@ -72,7 +76,7 @@ main( int argc, char** argv )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
 
     bool is_cameraStarted
-    = camReader.startCamera( cameraId, frameRate, brightness, exposure, gain, is_auto_shutter, shutter, is_print, is_sync );
+    = camReader.startCamera( cameraId, frameRate, brightness, exposure, gain, is_auto_shutter, shutter, WB_red, WB_Blue, is_print, is_sync );
     if ( !is_cameraStarted )
     {
         ros::shutdown( );
