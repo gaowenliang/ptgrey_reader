@@ -40,6 +40,7 @@ class singleCamera
     bool setFrameRate( FlyCapture2::Error& error, float rate );
     bool setBrightness( FlyCapture2::Error& error, float brightness );
     bool setAutoExposure( FlyCapture2::Error& error, float exposure );
+    bool setWhiteBalance( FlyCapture2::Error& error, int WB_red, int WB_Blue );
     bool setGain( FlyCapture2::Error& error, float gain );
     bool setGamma( FlyCapture2::Error& error, float gamma ); // useless
     bool setShutter( FlyCapture2::Error& error, float shutter );

@@ -20,13 +20,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(OpenCV REQUIRED)
 
-FIND_PATH(LIBUSB_1_INCLUDE_DIR libusb.h
-   /usr/include/libusb-1.0
+set(LIBUSB_1_INCLUDE_DIR
+    /usr/local/include/libusb-1.0
 )
 message(STATUS "Found libusb.h: ${LIBUSB_1_INCLUDE_DIR}")
 
-FIND_LIBRARY(LIBUSB_1_LIBRARY NAMES usb-1.0
-   /usr/lib/arm-linux-gnueabihf
+set(LIBUSB_1_LIBRARY
+    /usr/local/lib/libusb-1.0.so
 )
 message(STATUS "Found libusb 1.0 library: ${LIBUSB_1_LIBRARY}")
 
@@ -69,7 +69,6 @@ else (POINTGREY_FOUND)
            message(STATUS "don't find LibPOINTGREY")
 endif (POINTGREY_FOUND)
 
-
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES pointgrey
@@ -90,7 +89,7 @@ include_directories(
 
 
 add_executable(single_reader    src/single_reader.cc    src/ptgrey_lib/singleCamera.cpp    src/ptgrey_lib/singleCameraReader.cpp  src/preprocess/process.cc)
-target_link_libraries( single_reader    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}   )
+target_link_libraries( single_reader    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES} ${LIBUSB_1_LIBRARIES}   dw  )
 
 add_library(ptgrey_reader  src/milti_reader.cc   src/ptgrey_lib/singleCameraReader.cpp  src/ptgrey_lib/multiCamera.cpp    src/ptgrey_lib/multiCameraReader.cpp  src/preprocess/process.cc src/ptgrey_lib/singleCamera.cpp)
 target_link_libraries(ptgrey_reader    ${catkin_LIBRARIES}    ${OpenCV_LIBS}    ${POINTGREY_LIBRARIES}    ${LIBUSB_1_LIBRARIES}  )

@@ -446,14 +446,18 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     //    // Create a converted image
     //    FlyCapture2::Image convertedImage;
 
-    //    // Convert the raw image
-    //    error = rawImage.Convert( FlyCapture2::PIXEL_FORMAT_MONO8, &convertedImage );
-    //    if ( error != FlyCapture2::PGRERROR_OK )
-    //    {
-    //        std::cout << "[#INFO]Error in Convert " << std::endl;
-    //        error.PrintErrorTrace( );
-    //        return false;
-    //    }
+    // Convert the raw image
+    if ( cameraInfo.isColorCamera )
+        error = rawImage.Convert( FlyCapture2::PIXEL_FORMAT_BGR, &convertedImage );
+    else
+        error = rawImage.Convert( FlyCapture2::PIXEL_FORMAT_MONO8, &convertedImage );
+
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in Convert " << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
 
     // Change to opencv image Mat
     unsigned char* pdata = rawImage.GetData( );
@@ -636,6 +640,55 @@ singleCamera::setAutoExposure( FlyCapture2::Error& error, float exposure )
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setAutoExposure " << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
+
+bool
+singleCamera::setWhiteBalance( FlyCapture2::Error& error, int WB_red, int WB_Blue )
+{
+    FlyCapture2::PropertyInfo pInfo;
+    pInfo.type = FlyCapture2::WHITE_BALANCE;
+    error      = pCamera->GetPropertyInfo( &pInfo );
+
+    FlyCapture2::Property prop;
+    prop.type           = FlyCapture2::WHITE_BALANCE;
+    prop.autoManualMode = true;
+    prop.absControl     = false;
+    prop.onOff          = pInfo.onOffSupported;
+
+    if ( WB_red < pInfo.max )
+    {
+        prop.valueA = WB_red;
+    }
+    else
+        prop.valueA = pInfo.max;
+    if ( WB_Blue < pInfo.max )
+    {
+        prop.valueB = WB_Blue;
+    }
+    else
+        prop.valueB = pInfo.max;
+    if ( WB_red > pInfo.min )
+    {
+        prop.valueA = WB_red;
+    }
+    else
+        prop.valueA = pInfo.min;
+    if ( WB_Blue > pInfo.min )
+    {
+        prop.valueB = WB_Blue;
+    }
+    else
+        prop.valueB = pInfo.min;
+
+    error = pCamera->SetProperty( &prop );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setWhiteBalance " << std::endl;
         error.PrintErrorTrace( );
         return false;
     }
