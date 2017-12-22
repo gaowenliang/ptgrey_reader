@@ -21,14 +21,14 @@
         <param name="gain" type="double" value="5.0"/>
         <rosparam>
             is_sync:   false
-            is_roi:    false
+            is_roi:    true
             size_x:    1280
             size_y:    1024
             center_x:  640
             center_y:  512
-            cropper_x: 600
-            cropper_y: 600
-            down_sample_scale: 0.75
+            cropper_x: 900
+            cropper_y: 900
+            down_sample_scale: 1.0
         </rosparam>
     </node>
 
