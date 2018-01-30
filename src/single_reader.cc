@@ -17,6 +17,7 @@ main( int argc, char** argv )
     bool is_pub              = true;
     bool is_show             = false;
     bool is_print            = true;
+    bool is_grey             = false;
     int serialNum            = 17221121;
     bool is_auto_shutter     = false;
     bool is_sync             = true;
@@ -33,6 +34,7 @@ main( int argc, char** argv )
     int center_x = 0, center_y = 0;
     int cropper_x = 0, cropper_y = 0;
 
+    nh.getParam( "is_grey", is_grey );
     nh.getParam( "is_pub", is_pub );
     nh.getParam( "is_show", is_show );
     nh.getParam( "is_print", is_print );
@@ -55,21 +57,52 @@ main( int argc, char** argv )
     nh.getParam( "cropper_x", cropper_x );
     nh.getParam( "cropper_y", cropper_y );
 
-    preprocess::PreProcess* pre;
-    pre = new preprocess::PreProcess( cv::Size( size_x, size_y ), cv::Size( cropper_x, cropper_y ), cv::Point( center_x, center_y ), down_sample_scale );
+    std::stringstream os;
+    os << serialNum;
 
-    ros::Publisher imagePublisher    = nh.advertise< sensor_msgs::Image >( "/image_out", 3 );
-    ros::Publisher imageROIPublisher = nh.advertise< sensor_msgs::Image >( "/image_out_roi", 3 );
+    preprocess::PreProcess* pre;
+    pre = new preprocess::PreProcess( cv::Size( size_x, size_y ),
+                                      cv::Size( cropper_x, cropper_y ),
+                                      cv::Point( center_x, center_y ),
+                                      down_sample_scale );
 
     unsigned int cameraId = serialNum;
 
     ptgrey_reader::singleCameraReader camReader( cameraId );
 
+    ros::Publisher imagePublisher
+    = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image_raw", 3 );
+    ros::Publisher imageROIPublisher;
+    ros::Publisher imageGreyPublisher;
+    ros::Publisher imageROIGreyPublisher;
+
     if ( is_show )
         cv::namedWindow( "image", CV_WINDOW_NORMAL );
 
-    bool is_cameraStarted
-    = camReader.startCamera( cameraId, frameRate, brightness, exposure, gain, is_auto_shutter, shutter, WB_red, WB_Blue, is_print, is_sync );
+    bool is_cameraStarted = camReader.startCamera( cameraId,
+                                                   frameRate,
+                                                   brightness,
+                                                   exposure,
+                                                   gain, //
+                                                   is_auto_shutter,
+                                                   shutter,
+                                                   WB_red,
+                                                   WB_Blue,
+                                                   is_print,
+                                                   is_sync );
+
+    if ( is_roi )
+        imageROIPublisher = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image", 3 );
+    if ( is_grey && camReader.Camera( ).isColorCamera( ) )
+    {
+        imageGreyPublisher
+        = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image_grey", 3 );
+
+        if ( is_roi )
+            imageROIGreyPublisher
+            = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image_roi", 3 );
+    }
+
     if ( !is_cameraStarted )
     {
         ros::shutdown( );
@@ -111,7 +144,9 @@ main( int argc, char** argv )
 
                 outImg.header.frame_id = "frame";
                 if ( camReader.Camera( ).isColorCamera( ) )
+                {
                     outImg.encoding = sensor_msgs::image_encodings::BGR8;
+                }
                 else
                     outImg.encoding = sensor_msgs::image_encodings::MONO8;
 
@@ -122,6 +157,20 @@ main( int argc, char** argv )
                 {
                     outImg.image = pre->do_preprocess( cv_image.image );
                     imageROIPublisher.publish( outImg );
+                }
+
+                if ( is_grey && camReader.Camera( ).isColorCamera( ) )
+                {
+                    outImg.encoding = sensor_msgs::image_encodings::MONO8;
+
+                    cv::cvtColor( cv_image.image, outImg.image, CV_BGR2GRAY );
+                    imageGreyPublisher.publish( outImg );
+
+                    if ( is_roi )
+                    {
+                        outImg.image = pre->do_preprocess( outImg.image );
+                        imageROIGreyPublisher.publish( outImg );
+                    }
                 }
             }
 
