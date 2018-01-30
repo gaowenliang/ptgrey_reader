@@ -21,6 +21,7 @@
         <param name="gain" type="double" value="5.0"/>
         <rosparam>
             is_sync:   false
+            is_grey:   true
             is_roi:    true
             size_x:    1280
             size_y:    1024
