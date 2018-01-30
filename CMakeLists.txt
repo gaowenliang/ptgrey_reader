@@ -70,7 +70,7 @@ else (POINTGREY_FOUND)
 endif (POINTGREY_FOUND)
 
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS
   LIBRARIES pointgrey
   CATKIN_DEPENDS roscpp sensor_msgs std_msgs
 #  DEPENDS system_lib
