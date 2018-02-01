@@ -1,6 +1,6 @@
 <launch>
 
-    <arg name="device" default = "17302081"/>
+    <arg name="device" default = "17221069"/>
     <arg name="rate" default="40"/>
 
     <node name="single_reader" pkg="ptgrey_reader" type="single_reader"
