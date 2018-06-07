@@ -1,9 +1,4 @@
-#define BACKWARD_HAS_DW 1
-#include "backward.hpp"
-namespace backward
-{
-backward::SignalHandling sh;
-}
+
 
 //#include <code_utils/sys_utils.h>
 #include "ptgrey_lib/multiCameraReader.h"
@@ -161,7 +156,8 @@ main( int argc, char** argv )
 
                     if ( is_rois.at( pub_index ) )
                     {
-                        outImg.image = pres.at( pub_index )->do_preprocess( images_tmp.at( pub_index ).image );
+                        outImg.image
+                        = pres.at( pub_index )->do_preprocess( images_tmp.at( pub_index ).image );
                         imageROIPublishers.at( pub_index ).publish( outImg );
                     }
                 }
