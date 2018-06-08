@@ -1,9 +1,9 @@
 # PointGrey Reader
 ## Download code  
 
-Enter your catkin work space  
+Enter the catkin work space  
 ```
-cd YOUR_PATH/catkin_ws/src  
+cd YOUR_ROS_WORKSPACE/src  
 git clone https://github.com/gaowenliang/ptgrey_reader.git
 ```
 
@@ -11,7 +11,7 @@ git clone https://github.com/gaowenliang/ptgrey_reader.git
 
 ### Install libusb-1.0.21  
 ```
-cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/usb/  
+cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/install/usb/  
 tar jxvf libusb-1.0.21.tar.bz2  
 cd libusb-1.0.21/  
 ```  
@@ -26,29 +26,29 @@ The driver supports the computer with Intel CPUs and NVIDIA TX2.
 
 * For computer with Intel CPU:
 ```
-cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/amd64/
+cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/install/amd64/
 tar zxvf flycapture2-2.11.3.121-amd64-pkg.tgz
 cd flycapture2-2.11.3.121-amd64/
 ```
 
 * For TX2:
 ```
-cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/arm64/
+cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/install/arm64/
 tar zxvf flycapture.2.11.3.121_arm64.tar.gz
 cd flycapture.2.11.3.121_arm64/
 ```
 
-Follow the README file in the folder or follow the command below:  
+Follow the README file. Install requirements:  
 ```
 sudo apt-get install libraw1394-11 libgtkmm-2.4-dev libglademm-2.4-dev libgtkglextmm-x11-1.2-dev libusb-1.0-0 -y
 ```  
-FLYCAPTURE2 INSTALLATION:
+Install Flycapture2 driver library:
 ```
 sudo sh install_flycapture.sh
 ```
-
+Build the package:
 ```
-cd YOUR_PATH/catkin_ws/   
+cd YOUR_ROS_WORKSPACE/   
 catkin_make
 ```
 Before using that you may need to give them enough authority  
@@ -91,7 +91,7 @@ roslaunch ptgrey_reader single.launch
 After launch the camera, there will be a ROS topic named `/pg_YOU_SERIAL_NUM/image_raw`, such as `/pg_17221069/image_raw`. The type is [`sensor_msgs/Image`](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/Image.html).
 
 Parameter | Detail | Default
---- | --- | --- 
+ :---: | --- | :---: 
 `device` | Device Serial number |  
 `is_pub`   | Publish ROS image message or not | `true`
 `is_show`  | Show the image in screen or not  | `false`
@@ -100,12 +100,12 @@ Parameter | Detail | Default
 `is_grey`  | (for Color Sensor) Output Grey Scale image or not | `false`
 `is_roi`   | Use ROI and down sample not |  `false` 
 `is_auto_shutter` | Auto shutter time or not  |  `false` 
-`shutter` | Shutter time |  `0.0001` to `100.0` 
+`shutter`    | Shutter time |  `0.0001` to `100.0` 
 `brightness` | Brightness |  `5.0` 
-`exposure` | Exposure |  `0.8` 
-`WB_red` | Write Balance red |  `550` 
-`WB_Blue` | Write Balance blue |  `810` 
-`gain` | Gain |  `0.0` 
+`exposure`   | Exposure |  `0.8` 
+`WB_red`     | Write Balance red |  `550` 
+`WB_Blue`    | Write Balance blue |  `810` 
+`gain`       | Gain |  `0.0` 
 
 If `is_grey` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image_grey`.
 
