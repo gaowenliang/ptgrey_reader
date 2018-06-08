@@ -1,28 +1,31 @@
 # PointGrey Reader
-## 1. Download code  
-   Enter your catkin work space  
+## Download code  
+
+Enter your catkin work space  
 ```
 cd YOUR_PATH/catkin_ws/src  
   
 git clone https://github.com/gaowenliang/ptgrey_reader.git
 ```
-## 2. Install dependency for ptgrey
-### 2.1 Install libusb-1.0.21  
+
+## Install dependency for ptgrey
+
+### Install libusb-1.0.21  
 ```
 cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/usb/  
-  
 tar jxvf libusb-1.0.21.tar.bz2  
-  
 cd libusb-1.0.21/  
 ```  
-You can follow the INSTALL file in the folder or follow the command below:  
+Follow the INSTALL file to make and install the libusb library:  
 ```
 ./configure  
+
 make   
+
 sudo make install  
 ```
-### 2.2 Install driver for ptgrey  
-The driver support computer with Intel CPUs and NVIDIA TX2.
+### Install camera driver for ptgrey  
+The driver supports the computer with Intel CPUs and NVIDIA TX2.
 
 * For computer with Intel CPU:
 ```
@@ -51,22 +54,77 @@ sudo sh install_flycapture.sh
 cd YOUR_PATH/catkin_ws/   
 catkin_make
 ```
-Before using that you may need to give the enough authority  
+Before using that you may need to give them enough authority  
 ```
 sudo gedit cd /etc/udev/rules.d/40-flir.rules
 ```  
 Change all the 0613 or 0664 to 777 in the "40-flir.rules" and save.
 Then restart the system.
-## 4. Run  
-First, you need to run the camera_list to see your camera ID number, and copy it to the launch file.  
+
+## Run
+Use rosrun the camera_list to see your camera ID number.  
 ```
-roscore  
+roscore
   
 rosrun ptgrey_reader camera_list
 ```
-After you change the launch file with the ID number. 
+The camera infomation will be shown in screen, such as:
 
-If you want to use muti-camera, you need to excute this command first and roslaunch each camera's launch you need:  
+> FlyCapture2 library version: 2.11.3.425
+> Application build date: Jun  7 2018 23:22:29
+> 
+> Number of cameras detected: 1
+> 
+> ========== CAMERA INFORMATION ============
+>          Serial number | 17221110
+>           Camera model | Chameleon3 CM3-U3-13Y3M
+>          Camera vendor | Point Grey Research
+>                 Sensor | OnSemi PYTHON1300 (1/2" Mono CMOS)
+>             Resolution | 1280x1024
+>       Firmware version | 1.13.3.0
+>    Firmware build time | Tue Nov 15 18:35:47 2016
+> 
+> Done! Press Enter to exit...
+
+Copy the Serial number to launch file, and launch.
 ```
-sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'  
+roslaunch ptgrey_reader single.launch 
 ```
+After launch the camera, there will be a ROS topic named `/pg_YOU_SERIAL_NUM/image_raw`, such as `/pg_17221069/image_raw`. The type is [`sensor_msgs/Image`](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/Image.html).
+
+Parameter | Detail | Unit | Default
+--- | --- | --- | ---
+`device` | Device Serial number |  |  
+--- | --- | --- | ---
+`is_pub`   | Publish ROS image message or not |  | `true`
+`is_show`  | Show the image in screen or not  |  | `false`
+`is_print` | Print the infomation on screen or not |  | `true` 
+`is_sync`  | Use hardware trigger or not |  | `false`
+`is_grey`  | (for Color Sensor) Output Grey Scale image or not |  | `false`
+`is_roi`   | Use ROI and down sample not;
+
+
+If `is_grey` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image_grey`.
+
+If `is_roi` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image`.
+The ROI and down sample with such two step rule:
+* step1: crop ROI image
+<img src="docs/crp.png">
+* step2: down sample
+<img src="docs/ds.png">
+
+## Hardware Trigger
+The Hardware trigger is to capture an image while the camera received a trigger signal. An extra trigger cable is required.
+<img src="docs/line1.png">
+Buy the elements of the trigger cable in [JST NSHR-09V-S](https://www.digikey.hk/product-detail/zh/jst-sales-america-inc/NSHR-09V-S/455-2785-ND/3313624) and [JST ASSHLSSHL28W51](https://www.digikey.hk/product-detail/zh/jst-sales-america-inc/ASSHLSSHL28W51/455-3194-ND/6194849).
+<img src="docs/line2.png">
+Set `is_sync` as true in the launch file. And make sure the `rate` is larger than the trigger signal frequency.
+
+## Issue  
+### USB buffer issue:
+If progrem cannot run successfully, especially for muti-camera system and high FPS system, change the USB buffer before roslaunch the progrem: 
+```
+sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
+```
+Ps: 2048Mb is not required. Any buffer size is OK.
+
