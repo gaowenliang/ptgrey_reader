@@ -4,7 +4,6 @@
 Enter your catkin work space  
 ```
 cd YOUR_PATH/catkin_ws/src  
-  
 git clone https://github.com/gaowenliang/ptgrey_reader.git
 ```
 
@@ -19,9 +18,7 @@ cd libusb-1.0.21/
 Follow the INSTALL file to make and install the libusb library:  
 ```
 ./configure  
-
 make   
-
 sudo make install  
 ```
 ### Install camera driver for ptgrey  
@@ -30,18 +27,14 @@ The driver supports the computer with Intel CPUs and NVIDIA TX2.
 * For computer with Intel CPU:
 ```
 cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/amd64/
-
 tar zxvf flycapture2-2.11.3.121-amd64-pkg.tgz
-
 cd flycapture2-2.11.3.121-amd64/
 ```
 
 * For TX2:
 ```
 cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/arm64/
-
 tar zxvf flycapture.2.11.3.121_arm64.tar.gz
-
 cd flycapture.2.11.3.121_arm64/
 ```
 
@@ -56,7 +49,6 @@ sudo sh install_flycapture.sh
 
 ```
 cd YOUR_PATH/catkin_ws/   
-
 catkin_make
 ```
 Before using that you may need to give them enough authority  
@@ -70,52 +62,61 @@ Then restart the system.
 Use rosrun the camera_list to see your camera ID number.  
 ```
 roscore
-  
 rosrun ptgrey_reader camera_list
 ```
 The camera infomation will be shown in screen, such as:
 
-> FlyCapture2 library version: 2.11.3.425
-> Application build date: Jun  7 2018 23:22:29
-> 
-> Number of cameras detected: 1
-> 
-> ========== CAMERA INFORMATION ============
->          Serial number | 17221110
->           Camera model | Chameleon3 CM3-U3-13Y3M
->          Camera vendor | Point Grey Research
->                 Sensor | OnSemi PYTHON1300 (1/2" Mono CMOS)
->             Resolution | 1280x1024
->       Firmware version | 1.13.3.0
->    Firmware build time | Tue Nov 15 18:35:47 2016
-> 
-> Done! Press Enter to exit...
+```
+FlyCapture2 library version: 2.11.3.425
+Application build date: Jun  7 2018 23:22:29
 
-Copy the Serial number to launch file, and launch.
+Number of cameras detected: 1
+
+========== CAMERA INFORMATION ============
+         Serial number | 17221110
+          Camera model | Chameleon3 CM3-U3-13Y3M
+         Camera vendor | Point Grey Research
+                Sensor | OnSemi PYTHON1300 (1/2" Mono CMOS)
+            Resolution | 1280x1024
+      Firmware version | 1.13.3.0
+   Firmware build time | Tue Nov 15 18:35:47 2016
+
+Done! Press Enter to exit...
+```
+
+Copy the `Serial number` to launch file as `device`, and launch.
 ```
 roslaunch ptgrey_reader single.launch 
 ```
 After launch the camera, there will be a ROS topic named `/pg_YOU_SERIAL_NUM/image_raw`, such as `/pg_17221069/image_raw`. The type is [`sensor_msgs/Image`](http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/Image.html).
 
-Parameter | Detail | Unit | Default
---- | --- | --- | ---
-`device` | Device Serial number |  |  
---- | --- | --- | ---
-`is_pub`   | Publish ROS image message or not |  | `true`
-`is_show`  | Show the image in screen or not  |  | `false`
-`is_print` | Print the infomation on screen or not |  | `true` 
-`is_sync`  | Use hardware trigger or not |  | `false`
-`is_grey`  | (for Color Sensor) Output Grey Scale image or not |  | `false`
-`is_roi`   | Use ROI and down sample not;
-
+Parameter | Detail | Default
+--- | --- | --- 
+`device` | Device Serial number |  
+`is_pub`   | Publish ROS image message or not | `true`
+`is_show`  | Show the image in screen or not  | `false`
+`is_print` | Print the infomation on screen or not | `true` 
+`is_sync`  | Use hardware trigger or not | `false`
+`is_grey`  | (for Color Sensor) Output Grey Scale image or not | `false`
+`is_roi`   | Use ROI and down sample not |  `false` 
+`is_auto_shutter` | Auto shutter time or not  |  `false` 
+`shutter` | Shutter time |  `0.0001` to `100.0` 
+`brightness` | Brightness |  `5.0` 
+`exposure` | Exposure |  `0.8` 
+`WB_red` | Write Balance red |  `550` 
+`WB_Blue` | Write Balance blue |  `810` 
+`gain` | Gain |  `0.0` 
 
 If `is_grey` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image_grey`.
 
 If `is_roi` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image`.
 The ROI and down sample with such two step rule:
 * step1: crop ROI image
+
 <img src="docs/crp.png">
-* step2: down sample
+
+* step2: down sample, with `down_sample_scale` <= 1.0
+
 <img src="docs/ds.png">
 
 ## Hardware Trigger
