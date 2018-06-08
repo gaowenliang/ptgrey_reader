@@ -30,14 +30,18 @@ The driver supports the computer with Intel CPUs and NVIDIA TX2.
 * For computer with Intel CPU:
 ```
 cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/amd64/
+
 tar zxvf flycapture2-2.11.3.121-amd64-pkg.tgz
+
 cd flycapture2-2.11.3.121-amd64/
 ```
 
 * For TX2:
 ```
 cd YOUR_PATH/catkin_ws/src/ptgrey_reader/install/arm64/
+
 tar zxvf flycapture.2.11.3.121_arm64.tar.gz
+
 cd flycapture.2.11.3.121_arm64/
 ```
 
@@ -52,6 +56,7 @@ sudo sh install_flycapture.sh
 
 ```
 cd YOUR_PATH/catkin_ws/   
+
 catkin_make
 ```
 Before using that you may need to give them enough authority  
