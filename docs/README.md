@@ -1,2 +1,0 @@
-# pointgrey
-pointgrey camera reader
