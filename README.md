@@ -53,7 +53,7 @@ catkin_make
 ```
 Before using that you may need to give them enough authority  
 ```
-sudo gedit cd /etc/udev/rules.d/40-flir.rules
+sudo gedit /etc/udev/rules.d/40-flir.rules
 ```  
 Change all the 0613 or 0664 to 777 in the "40-flir.rules" and save.
 Then restart the system.
