@@ -128,9 +128,25 @@ Set `is_sync` as true in the launch file. And make sure the `rate` is larger tha
 
 ## Issue  
 ### USB buffer issue:
-If progrem cannot run successfully, especially for muti-camera system and high FPS system, change the USB buffer before roslaunch the progrem: 
+If progrem cannot run successfully, especially for muti-camera system and high FPS system, change the USB buffer before roslaunch the progrem:
+* To temporarily set the maximum usbfs memory limit, run this command:
 ```
 sudo -S sh -c 'echo 2048 > /sys/module/usbcore/parameters/usbfs_memory_mb'
 ```
+* To permanently set the maximum usbfs memory limit:
+Open the /etc/default/grub file in any text editor.
+```
+sudo gedit /etc/default/grub
+```
+Find and replace:
+`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"`
+with this:
+`GRUB_CMDLINE_LINUX_DEFAULT="quiet splash usbcore.usbfs_memory_mb=2048"`
+Update grub with these settings:
+```
+sudo update-grub
+```
+Reboot and test a USB 3.1 camera.
+
 Ps: 2048Mb is not required. Any buffer size is OK.
 
