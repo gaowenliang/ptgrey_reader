@@ -126,6 +126,8 @@ Buy the elements of the trigger cable in [JST NSHR-09V-S](https://www.digikey.hk
 <img src="docs/line2.png">
 Set `is_sync` as true in the launch file. And make sure the `rate` is larger than the trigger signal frequency.
 
+The Trigger signal is a high level signal.
+
 ## Issue  
 ### USB buffer issue:
 If progrem cannot run successfully, especially for muti-camera system and high FPS system, change the USB buffer before roslaunch the progrem:
