@@ -1,0 +1,68 @@
+<launch>
+
+    <arg name="device" default = "17533292"/>
+    <arg name="device2" default = "17532718"/>
+    <arg name="rate" default="1"/>
+
+    <node name="single_reader" pkg="ptgrey_reader" type="single_reader"
+         ns="pg_$(arg device)" output="screen">
+        <remap from="/image_out" to="image_raw" />
+        <remap from="/image_out_roi" to="image" />
+        <param name="is_pub" type="bool" value="true"/>
+        <param name="is_show" type="bool" value="false"/>
+        <param name="is_print" type="bool" value="true"/>
+        <param name="serialNum" type="int" value="$(arg device)"/>
+        <param name="frameRate" type="double" value="$(arg rate)"/>
+        <param name="is_auto_shutter" type="bool" value="false"/>
+        <param name="shutter" type="double" value="15.0"/>
+        <param name="brightness" type="double" value="10.1"/>
+        <param name="exposure" type="double" value="0.8"/>
+        <param name="WB_red" type="int" value="550"/>
+        <param name="WB_Blue" type="int" value="810"/>
+        <param name="gain" type="double" value="5.0"/>
+        <rosparam>
+            is_sync:   false
+            is_grey:   true
+            is_roi:    true
+            size_x:    1280
+            size_y:    1024
+            center_x:  640
+            center_y:  512
+            cropper_x: 900
+            cropper_y: 900
+            down_sample_scale: 1.0
+        </rosparam>
+    </node>
+
+    <node name="single_reader" pkg="ptgrey_reader" type="single_reader"
+         ns="pg_$(arg device2)" output="screen">
+        <remap from="/image_out" to="image_raw" />
+        <remap from="/image_out_roi" to="image" />
+        <param name="is_pub" type="bool" value="true"/>
+        <param name="is_show" type="bool" value="false"/>
+        <param name="is_print" type="bool" value="true"/>
+        <param name="serialNum" type="int" value="$(arg device2)"/>
+        <param name="frameRate" type="double" value="$(arg rate)"/>
+        <param name="is_auto_shutter" type="bool" value="false"/>
+        <param name="shutter" type="double" value="15.0"/>
+        <param name="brightness" type="double" value="10.1"/>
+        <param name="exposure" type="double" value="0.8"/>
+        <param name="WB_red" type="int" value="550"/>
+        <param name="WB_Blue" type="int" value="810"/>
+        <param name="gain" type="double" value="5.0"/>
+        <rosparam>
+            is_sync:   false
+            is_grey:   true
+            is_roi:    true
+            size_x:    1280
+            size_y:    1024
+            center_x:  640
+            center_y:  512
+            cropper_x: 900
+            cropper_y: 900
+            down_sample_scale: 1.0
+        </rosparam>
+    </node>
+
+
+</launch>

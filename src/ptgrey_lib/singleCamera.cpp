@@ -581,10 +581,13 @@ singleCamera::setFrameRate( FlyCapture2::Error& error, float rate )
     prop.autoManualMode = ( false && pInfo.autoSupported );
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( rate < pInfo.absMax )
-        prop.absValue = rate;
-    else
+
+    if ( rate < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( rate > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = rate;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -609,10 +612,13 @@ singleCamera::setBrightness( FlyCapture2::Error& error, float brightness )
     prop.autoManualMode = ( false && pInfo.autoSupported );
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( brightness < pInfo.absMax )
-        prop.absValue = brightness;
-    else
+
+    if ( brightness < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( brightness > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = brightness;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -637,10 +643,13 @@ singleCamera::setAutoExposure( FlyCapture2::Error& error, float exposure )
     prop.autoManualMode = false;
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( exposure < pInfo.absMax )
-        prop.absValue = exposure;
-    else
+
+    if ( exposure < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( exposure > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = exposure;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -666,30 +675,19 @@ singleCamera::setWhiteBalance( FlyCapture2::Error& error, int WB_red, int WB_Blu
     prop.absControl     = false;
     prop.onOff          = pInfo.onOffSupported;
 
-    if ( WB_red < int( pInfo.max ) )
-    {
-        prop.valueA = uint( WB_red );
-    }
-    else
-        prop.valueA = pInfo.max;
-    if ( WB_Blue < int( pInfo.max ) )
-    {
-        prop.valueB = uint( WB_Blue );
-    }
-    else
-        prop.valueB = pInfo.max;
-    if ( WB_red > int( pInfo.min ) )
-    {
-        prop.valueA = uint( WB_red );
-    }
-    else
+    if ( WB_red < int( pInfo.min ) )
         prop.valueA = pInfo.min;
-    if ( WB_Blue > int( pInfo.min ) )
-    {
-        prop.valueB = uint( WB_Blue );
-    }
+    else if ( WB_red > int( pInfo.max ) )
+        prop.valueA = pInfo.max;
     else
-        prop.valueB = uint( pInfo.min );
+        prop.valueA = uint( WB_red );
+
+    if ( WB_Blue < int( pInfo.min ) )
+        prop.valueB = pInfo.min;
+    else if ( WB_Blue > int( pInfo.max ) )
+        prop.valueB = pInfo.max;
+    else
+        prop.valueB = uint( WB_Blue );
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -709,24 +707,25 @@ singleCamera::setGamma( FlyCapture2::Error& error, float gamma )
     pInfo.type = FlyCapture2::GAMMA;
     error      = pCamera->GetPropertyInfo( &pInfo );
 
-    //    std::cout << "in setGamma" << std::endl;
-    //    std::cout << "    autoSupported   | " << pInfo.autoSupported <<
-    //    std::endl;
-    //    std::cout << "    manualSupported | " << pInfo.manualSupported <<
-    //    std::endl;
-    //    std::cout << "    absValSupported | " << pInfo.absValSupported <<
-    //    std::endl;
-    //    std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "in setGamma" << std::endl;
+    // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    // std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    // std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "             absMin | " << pInfo.absMin << std::endl;
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::GAMMA;
     prop.autoManualMode = false;
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( gamma < pInfo.absMax )
-        prop.absValue = gamma;
-    else
+
+    if ( gamma < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( gamma > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = gamma;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
@@ -825,26 +824,184 @@ singleCamera::setShutter( FlyCapture2::Error& error, float shutter )
 
     // std::cout << "in setShutter" << std::endl;
     // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
-    // std::cout << "    manualSupported | " << pInfo.manualSupported <<
-    // std::endl;
-    // std::cout << "    absValSupported | " << pInfo.absValSupported <<
-    // std::endl;
+    // std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    // std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
     // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "             absMin | " << pInfo.absMin << std::endl;
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::SHUTTER;
     prop.autoManualMode = false;
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( shutter < pInfo.absMax )
-        prop.absValue = shutter;
-    else
+
+    if ( shutter < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( shutter > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = shutter;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in setShutter." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
+
+bool
+singleCamera::setSharpness( FlyCapture2::Error& error, float sharpness )
+{
+    FlyCapture2::PropertyInfo pInfo;
+    pInfo.type = FlyCapture2::SHARPNESS;
+    error      = pCamera->GetPropertyInfo( &pInfo );
+
+    // std::cout << "in setSharpness" << std::endl;
+    // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    // std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    // std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "             absMin | " << pInfo.absMin << std::endl;
+
+    FlyCapture2::Property prop;
+    prop.type           = FlyCapture2::SHARPNESS;
+    prop.autoManualMode = false;
+    prop.absControl     = pInfo.absValSupported;
+    prop.onOff          = pInfo.onOffSupported;
+
+    if ( sharpness < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( sharpness > pInfo.absMax )
+        prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = sharpness;
+    std::cout << "    set sharpness as | " << prop.absValue << std::endl;
+
+    error = pCamera->SetProperty( &prop );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setSharpness." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
+
+bool
+singleCamera::setHue( FlyCapture2::Error& error, float hue )
+{
+    FlyCapture2::PropertyInfo pInfo;
+    pInfo.type = FlyCapture2::HUE;
+    error      = pCamera->GetPropertyInfo( &pInfo );
+
+    // std::cout << "in setHue" << std::endl;
+    // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    // std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    // std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "             absMin | " << pInfo.absMin << std::endl;
+
+    FlyCapture2::Property prop;
+    prop.type           = FlyCapture2::HUE;
+    prop.autoManualMode = false;
+    prop.absControl     = pInfo.absValSupported;
+    prop.onOff          = pInfo.onOffSupported;
+
+    if ( hue < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( hue > pInfo.absMax )
+        prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = hue;
+    std::cout << "    set hue as | " << prop.absValue << std::endl;
+
+    error = pCamera->SetProperty( &prop );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setHue." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
+
+bool
+singleCamera::setSaturation( FlyCapture2::Error& error, float saturation )
+{
+    FlyCapture2::PropertyInfo pInfo;
+    pInfo.type = FlyCapture2::SATURATION;
+    error      = pCamera->GetPropertyInfo( &pInfo );
+
+    //  std::cout << "in setSaturation" << std::endl;
+    //  std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    //  std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    //  std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    //  std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    //  std::cout << "             absMin | " << pInfo.absMin << std::endl;
+
+    FlyCapture2::Property prop;
+    prop.type           = FlyCapture2::SATURATION;
+    prop.autoManualMode = false;
+    prop.absControl     = pInfo.absValSupported;
+    prop.onOff          = pInfo.onOffSupported;
+
+    if ( saturation < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( saturation > pInfo.absMax )
+        prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = saturation;
+    std::cout << "    set saturation as | " << prop.absValue << std::endl;
+
+    error = pCamera->SetProperty( &prop );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setSaturation." << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
+}
+
+bool
+singleCamera::setIris( FlyCapture2::Error& error, float iris )
+{
+    FlyCapture2::PropertyInfo pInfo;
+    pInfo.type = FlyCapture2::IRIS;
+    error      = pCamera->GetPropertyInfo( &pInfo );
+
+    // std::cout << "in setIris" << std::endl;
+    // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    // std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    // std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    // std::cout << "             absMin | " << pInfo.absMin << std::endl;
+
+    FlyCapture2::Property prop;
+    prop.type           = FlyCapture2::IRIS;
+    prop.autoManualMode = false;
+    prop.absControl     = pInfo.absValSupported;
+    prop.onOff          = pInfo.onOffSupported;
+
+    if ( iris < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( iris > pInfo.absMax )
+        prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = iris;
+    std::cout << "    set iris as | " << prop.absValue << std::endl;
+
+    error = pCamera->SetProperty( &prop );
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setIris." << std::endl;
         error.PrintErrorTrace( );
         return false;
     }
@@ -859,23 +1016,25 @@ singleCamera::setGain( FlyCapture2::Error& error, float gain )
     pInfo.type = FlyCapture2::GAIN;
     error      = pCamera->GetPropertyInfo( &pInfo );
 
-    // std::cout << "in setGain" << std::endl;
-    // std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
-    // std::cout << "    manualSupported | " << pInfo.manualSupported <<
-    // std::endl;
-    // std::cout << "    absValSupported | " << pInfo.absValSupported <<
-    // std::endl;
-    // std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    //  std::cout << "in setGain" << std::endl;
+    //  std::cout << "    autoSupported   | " << pInfo.autoSupported << std::endl;
+    //  std::cout << "    manualSupported | " << pInfo.manualSupported << std::endl;
+    //  std::cout << "    absValSupported | " << pInfo.absValSupported << std::endl;
+    //  std::cout << "             absMax | " << pInfo.absMax << std::endl;
+    //  std::cout << "             absMin | " << pInfo.absMin << std::endl;
 
     FlyCapture2::Property prop;
     prop.type           = FlyCapture2::GAIN;
     prop.autoManualMode = false;
     prop.absControl     = pInfo.absValSupported;
     prop.onOff          = pInfo.onOffSupported;
-    if ( gain < pInfo.absMax )
-        prop.absValue = gain;
-    else
+
+    if ( gain < pInfo.absMin )
+        prop.absValue = pInfo.absMin;
+    else if ( gain > pInfo.absMax )
         prop.absValue = pInfo.absMax;
+    else
+        prop.absValue = gain;
 
     error = pCamera->SetProperty( &prop );
     if ( error != FlyCapture2::PGRERROR_OK )

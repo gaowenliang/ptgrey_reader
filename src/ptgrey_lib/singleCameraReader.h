@@ -24,6 +24,9 @@ class singleCameraReader
                             double shutter,
                             int WB_red,
                             int WB_Blue,
+                            double aturation,
+                            double hue,
+                            double sharpness,
                             bool is_sync = false );
     void printCameraProperty( );
 
@@ -36,6 +39,9 @@ class singleCameraReader
                       double shutter,
                       int WB_red,
                       int WB_Blue,
+                      double saturation,
+                      double hue,
+                      double sharpness,
                       bool is_print_info = false,
                       bool is_sync       = false );
     cvImage grabImage( );

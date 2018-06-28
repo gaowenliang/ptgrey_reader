@@ -29,6 +29,9 @@ main( int argc, char** argv )
     double shutter           = 5.0;
     int WB_red               = 500;
     int WB_Blue              = 800;
+    double saturation        = 100;
+    double hue               = 0;
+    double sharpness         = 0;
     double down_sample_scale = 0.75;
     int size_x = 0, size_y = 0;
     int center_x = 0, center_y = 0;
@@ -49,6 +52,10 @@ main( int argc, char** argv )
     nh.getParam( "shutter", shutter );
     nh.getParam( "WB_red", WB_red );
     nh.getParam( "WB_Blue", WB_Blue );
+    nh.getParam( "saturation", saturation );
+    nh.getParam( "hue", hue );
+    nh.getParam( "sharpness", sharpness );
+
     nh.getParam( "down_sample_scale", down_sample_scale );
     nh.getParam( "size_x", size_x );
     nh.getParam( "size_y", size_y );
@@ -88,11 +95,15 @@ main( int argc, char** argv )
                                                    shutter,
                                                    WB_red,
                                                    WB_Blue,
+                                                   saturation,
+                                                   hue,
+                                                   sharpness,
                                                    is_print,
                                                    is_sync );
 
     if ( is_roi )
-        imageROIPublisher = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image", 3 );
+        imageROIPublisher
+        = nh.advertise< sensor_msgs::Image >( "/pg_" + os.str( ) + "/image", 3 );
     if ( is_grey && camReader.Camera( ).isColorCamera( ) )
     {
         imageGreyPublisher

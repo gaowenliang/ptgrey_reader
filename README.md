@@ -100,12 +100,12 @@ Parameter | Detail | Default
 `is_grey`  | (for Color Sensor) Output Grey Scale image or not | `false`
 `is_roi`   | Use ROI and down sample not |  `false` 
 `is_auto_shutter` | Auto shutter time or not  |  `false` 
-`shutter`    | Shutter time |  `0.0001` to `100.0` 
+`shutter`    | Shutter time |  `0.0001` to `49.9313` 
 `brightness` | Brightness |  `5.0` 
 `exposure`   | Exposure |  `0.8` 
 `WB_red`     | Write Balance red |  `550` 
 `WB_Blue`    | Write Balance blue |  `810` 
-`gain`       | Gain |  `0.0` 
+`gain`       | Gain |  `0.0 to 18.0` 
 
 If `is_grey` is `true`, there will be a extra ROS tpoic named `/pg_YOU_SERIAL_NUM/image_grey`.
 

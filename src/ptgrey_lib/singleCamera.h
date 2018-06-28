@@ -24,19 +24,21 @@ class singleCamera
     float getFrameRate( FlyCapture2::Error& error );
     float getBrightness( FlyCapture2::Error& error );
     float getAutoExposure( FlyCapture2::Error& error );
-    float getSharpness( FlyCapture2::Error& error );
     float getWhiteBalance( FlyCapture2::Error& error );
-    float getHue( FlyCapture2::Error& error );
-    float getSaturation( FlyCapture2::Error& error );
-    float getGamma( FlyCapture2::Error& error );
-    float getIris( FlyCapture2::Error& error );
-    float getShutter( FlyCapture2::Error& error );
     float getGain( FlyCapture2::Error& error );
+    float getGamma( FlyCapture2::Error& error );
+    float getShutter( FlyCapture2::Error& error );
     float getTriggerMode( FlyCapture2::Error& error );
     float getTriggerDelay( FlyCapture2::Error& error );
+
+    float getSharpness( FlyCapture2::Error& error );
+    float getHue( FlyCapture2::Error& error );
+    float getSaturation( FlyCapture2::Error& error );
+    float getIris( FlyCapture2::Error& error );
     float getCameraTemperature( FlyCapture2::Error& error );
 
     bool setMetadata( FlyCapture2::Error& error );
+
     bool setFrameRate( FlyCapture2::Error& error, float rate );
     bool setBrightness( FlyCapture2::Error& error, float brightness );
     bool setAutoExposure( FlyCapture2::Error& error, float exposure );
@@ -44,10 +46,13 @@ class singleCamera
     bool setGain( FlyCapture2::Error& error, float gain );
     bool setGamma( FlyCapture2::Error& error, float gamma ); // useless
     bool setShutter( FlyCapture2::Error& error, float shutter );
+    bool setSharpness( FlyCapture2::Error& error, float sharpness );
+    bool setHue( FlyCapture2::Error& error, float hue );
+    bool setSaturation( FlyCapture2::Error& error, float saturation );
+    bool setIris( FlyCapture2::Error& error, float iris );
     bool setShutterAuto( FlyCapture2::Error& error );
     bool setTrigger( FlyCapture2::Error& error );
     bool setTriggerOFF( FlyCapture2::Error& error );
-
     bool isColorCamera( );
 
     public:

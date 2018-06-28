@@ -20,14 +20,29 @@ singleCameraReader::getConnectCameraNum( )
 }
 
 void
-singleCameraReader::setCameraProperty(
-double frameRate, double brightness, double exposure, double gain, bool is_auto_shutter, double shutter, int WB_red, int WB_Blue, bool is_sync )
+singleCameraReader::setCameraProperty( double frameRate,
+                                       double brightness,
+                                       double exposure,
+                                       double gain,
+                                       bool is_auto_shutter,
+                                       double shutter,
+                                       int WB_red,
+                                       int WB_Blue,
+                                       double saturation,
+                                       double hue,
+                                       double sharpness,
+                                       bool is_sync )
 {
     Camera( ).setBrightness( error, brightness );
     Camera( ).setAutoExposure( error, exposure );
     Camera( ).setWhiteBalance( error, WB_red, WB_Blue );
     Camera( ).setGain( error, gain );
     Camera( ).setFrameRate( error, frameRate );
+
+    Camera( ).setSaturation( error, saturation );
+    Camera( ).setHue( error, hue );
+    Camera( ).setSharpness( error, sharpness );
+
     if ( is_auto_shutter )
         Camera( ).setShutterAuto( error );
     else
@@ -68,6 +83,9 @@ singleCameraReader::startCamera( unsigned int serialNum,
                                  double shutter,
                                  int WB_red,
                                  int WB_Blue,
+                                 double saturation,
+                                 double hue,
+                                 double sharpness,
                                  bool is_print_info,
                                  bool is_sync )
 {
@@ -95,13 +113,25 @@ singleCameraReader::startCamera( unsigned int serialNum,
         Camera( ).camConfig( ).numBuffers = 10;
         //    config.numImageNotifications    = 0;
         //    config.minNumImageNotifications = 0;
-        Camera( ).camConfig( ).grabTimeout                   = FlyCapture2::TIMEOUT_UNSPECIFIED;
+        Camera( ).camConfig( ).grabTimeout = FlyCapture2::TIMEOUT_UNSPECIFIED;
         Camera( ).camConfig( ).highPerformanceRetrieveBuffer = true;
         Camera( ).camConfig( ).grabMode                      = FlyCapture2::DROP_FRAMES;
         Camera( ).setCameraConfiguration( error );
         Camera( ).setMetadata( error );
 
-        setCameraProperty( frameRate, brightness, exposure, gain, is_auto_shutter, shutter, WB_red, WB_Blue, is_sync );
+        setCameraProperty( frameRate,
+                           brightness,
+                           exposure,
+                           gain,
+                           is_auto_shutter, //
+                           shutter,
+                           WB_red,
+                           WB_Blue,
+                           saturation,
+                           hue,
+                           sharpness,
+                           is_sync );
+
         if ( is_print_info )
             printCameraProperty( );
 
