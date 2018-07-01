@@ -38,6 +38,7 @@ singleCameraReader::setCameraProperty( double frameRate,
     Camera( ).setWhiteBalance( error, WB_red, WB_Blue );
     Camera( ).setGain( error, gain );
     Camera( ).setFrameRate( error, frameRate );
+    Camera( ).setTimeout( error, 1000. / frameRate );
 
     Camera( ).setSaturation( error, saturation );
     Camera( ).setHue( error, hue );

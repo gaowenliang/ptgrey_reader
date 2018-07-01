@@ -439,7 +439,8 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     {
         error.PrintErrorTrace( );
         std::cout << "[#INFO]Error in RetrieveBuffer, captureOneImage " << std::endl;
-        return false;
+        //        return false;
+        // TODO
     }
 
     time = rawImage.GetTimeStamp( );
@@ -459,7 +460,8 @@ singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCap
     {
         std::cout << "[#INFO]Error in Convert " << std::endl;
         error.PrintErrorTrace( );
-        return false;
+        //     return false;
+        // TODO
     }
 
     // Change to opencv image Mat
@@ -807,6 +809,29 @@ singleCamera::setTriggerOFF( FlyCapture2::Error& error )
         std::cout << "[#INFO] Trigger OFF." << std::endl;
         return false;
     }
+}
+
+bool
+singleCamera::setTimeout( FlyCapture2::Error& error, double timeout_ms )
+{
+    FlyCapture2::FC2Config pConfig;
+    error = pCamera->GetConfiguration( &pConfig );
+
+    pConfig.grabTimeout = ( int )( timeout_ms );
+    if ( pConfig.grabTimeout < 0.00001 )
+    {
+        pConfig.grabTimeout = -1; //  no timeout
+    }
+    error = pCamera->SetConfiguration( &pConfig );
+    std::cout << "-set grabTimeout | " << pConfig.grabTimeout << std::endl;
+    if ( error != FlyCapture2::PGRERROR_OK )
+    {
+        std::cout << "[#INFO]Error in setTimeout " << std::endl;
+        error.PrintErrorTrace( );
+        return false;
+    }
+    else
+        return true;
 }
 
 bool

@@ -30,7 +30,6 @@ class singleCamera
     float getShutter( FlyCapture2::Error& error );
     float getTriggerMode( FlyCapture2::Error& error );
     float getTriggerDelay( FlyCapture2::Error& error );
-
     float getSharpness( FlyCapture2::Error& error );
     float getHue( FlyCapture2::Error& error );
     float getSaturation( FlyCapture2::Error& error );
@@ -53,6 +52,8 @@ class singleCamera
     bool setShutterAuto( FlyCapture2::Error& error );
     bool setTrigger( FlyCapture2::Error& error );
     bool setTriggerOFF( FlyCapture2::Error& error );
+    bool setTimeout( FlyCapture2::Error& error, double timeout_ms );
+
     bool isColorCamera( );
 
     public:
