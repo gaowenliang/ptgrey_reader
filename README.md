@@ -36,6 +36,11 @@ cd flycapture2-2.11.3.121-amd64/
 cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/install/arm64/
 tar zxvf flycapture.2.11.3.121_arm64.tar.gz
 cd flycapture.2.11.3.121_arm64/
+cd include/
+sudo mkdir /usr/include/flycapture
+sudo cp *.h /usr/include/flycapture
+cd ../lib/
+sudo cp lib* /usr/lib
 ```
 
 Follow the README file. Install requirements:  
