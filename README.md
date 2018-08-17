@@ -47,7 +47,7 @@ Follow the README file. Install requirements:
 ```
 sudo apt-get install libraw1394-11 libgtkmm-2.4-dev libglademm-2.4-dev libgtkglextmm-x11-1.2-dev libusb-1.0-0 -y
 ```  
-Install Flycapture2 driver library:
+Install Flycapture2 driver library (only Intel CPU need this step. No need for TX2)
 ```
 sudo sh install_flycapture.sh
 ```
