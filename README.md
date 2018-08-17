@@ -9,6 +9,16 @@ git clone https://github.com/gaowenliang/ptgrey_reader.git
 
 ## Install dependency for ptgrey
 
+For TX2 the you can direct use our install script
+
+```
+cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/
+sh autoinstall_tx2.sh
+```
+
+and jump to run step
+
+
 ### Install libusb-1.0.21  
 ```
 cd YOUR_ROS_WORKSPACE/src/ptgrey_reader/install/usb/  
