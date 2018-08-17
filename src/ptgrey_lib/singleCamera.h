@@ -81,6 +81,7 @@ class singleCamera
     FlyCapture2::Camera* pCamera; // point to the Camera
     FlyCapture2::FC2Config cameraConfig;
     FlyCapture2::CameraInfo cameraInfo;
+    FlyCapture2::Image rawImage;
 };
 }
 #endif // CAMERAREADER_H

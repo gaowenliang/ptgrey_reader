@@ -14,7 +14,6 @@
             shutter: 5.0
             brightness: 0.1
             exposure: 0.4
-            gain: 1.0
 
             # individual setting for camera 0
             camera0:

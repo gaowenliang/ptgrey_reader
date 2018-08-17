@@ -418,6 +418,7 @@ singleCamera::startCapture( FlyCapture2::Error& error )
 {
     // Start capturing images
     error = pCamera->StartCapture( );
+
     if ( error != FlyCapture2::PGRERROR_OK )
     {
         std::cout << "[#INFO]Error in StartCapture " << std::endl;
@@ -431,8 +432,6 @@ singleCamera::startCapture( FlyCapture2::Error& error )
 bool
 singleCamera::captureOneImage( FlyCapture2::Error& error, cv::Mat& image, FlyCapture2::TimeStamp& time )
 {
-    FlyCapture2::Image rawImage;
-
     // Retrieve an image
     error = pCamera->RetrieveBuffer( &rawImage );
     if ( error != FlyCapture2::PGRERROR_OK )
