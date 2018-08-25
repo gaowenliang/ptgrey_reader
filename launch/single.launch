@@ -1,6 +1,6 @@
 <launch>
 
-    <arg name="device" default = "17302077"/>
+    <arg name="device" default = "17532717"/>
     <arg name="rate" default="20"/>
 
     <node name="single_reader" pkg="ptgrey_reader" type="single_reader"
@@ -13,8 +13,8 @@
         <param name="serialNum" type="int" value="$(arg device)"/>
         <param name="frameRate" type="double" value="$(arg rate)"/>
         <param name="is_auto_shutter" type="bool" value="false"/>
-        <param name="shutter" type="double" value="15.5"/>
-        <param name="brightness" type="double" value="10.1"/>
+        <param name="shutter" type="double" value="4.5"/>
+        <param name="brightness" type="double" value="3.1"/>
         <param name="exposure" type="double" value="0.8"/>
         <param name="WB_red" type="int" value="550"/>
         <param name="WB_Blue" type="int" value="810"/>
